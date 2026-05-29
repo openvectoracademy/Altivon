@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inbox — Altivon Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:#2C3E55;background:#FAFAF8;min-height:100vh;cursor:none}
+:root{--n1:#0B1F3A;--n2:#112D52;--g1:#B8751A;--g2:#CF8B28;--white:#FFFFFF;--off0:#FAFAF8;--t2:#2C3E55;--t3:#5A6B7E;--t4:#94A3B5;--b1:#E2E8EF;--b2:#CED6DF;--gold-bg:rgba(184,117,26,.07);--gold-edge:rgba(184,117,26,.22);--r1:8px;--r2:14px;--r3:20px;--hh:72px;--max:800px;--px:clamp(20px,5vw,40px);--s1:0 1px 4px rgba(11,31,58,.06);--s2:0 4px 16px rgba(11,31,58,.08);--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-bounce:cubic-bezier(0.34,1.56,0.64,1)}
+#cursor{position:fixed;width:12px;height:12px;background:var(--g1);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .25s,height .25s;will-change:left,top}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid rgba(184,117,26,.5);border-radius:50%;pointer-events:none;z-index:9997;transform:translate(-50%,-50%);transition:width .3s;will-change:left,top}
+.cursor-expanded #cursor{width:18px;height:18px;background:var(--g2)}.cursor-expanded #cursor-ring{width:52px;height:52px;opacity:.6}
+@media(max-width:960px){#cursor,#cursor-ring{display:none}body{cursor:auto}}
+#header{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--hh);background:rgba(250,250,248,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);display:flex;align-items:center}
+.h-wrap{max-width:var(--max);margin:0 auto;padding:0 var(--px);width:100%;display:flex;align-items:center;gap:16px}
+.back-btn{width:36px;height:36px;border-radius:var(--r1);border:1px solid var(--b1);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:none;text-decoration:none;transition:all .25s}
+.back-btn:hover{background:var(--off0)}
+.back-btn svg{width:16px;height:16px;stroke:var(--t3);stroke-width:2}
+.h-wrap h2{font-family:'Fraunces',serif;font-weight:600;font-size:1.2rem;color:var(--n1)}
+.main{padding-top:calc(var(--hh) + 32px);padding-bottom:60px}
+.inner{max-width:var(--max);margin:0 auto;padding:0 var(--px)}
+.tabs{display:flex;gap:0;margin-bottom:24px;background:var(--white);border:1px solid var(--b1);border-radius:var(--r2);overflow:hidden}
+.tab-btn{flex:1;padding:12px;background:none;border:none;cursor:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;font-weight:600;color:var(--t4);transition:all .25s}
+.tab-btn.active{background:var(--n1);color:var(--white)}
+.notif-list{display:flex;flex-direction:column;gap:8px}
+.notif-item{display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--white);border:1px solid var(--b1);border-radius:var(--r2);cursor:none;transition:all .25s;border-left:3px solid transparent}
+.notif-item:hover{box-shadow:var(--s2)}
+.notif-item.unread{border-left-color:var(--g1);background:var(--gold-bg)}
+.notif-item.read{opacity:.6}
+.notif-badge{padding:3px 9px;border-radius:20px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0}
+.notif-badge.info{background:#EFF6FF;color:#2563EB}.notif-badge.warning{background:#FFFBEB;color:#D97706}
+.notif-badge.success{background:#F0FDF4;color:#16A34A}.notif-badge.important{background:#FEF2F2;color:#DC2626}
+.notif-content{flex:1;min-width:0}
+.notif-content h4{font-size:.9rem;font-weight:600;color:var(--n1);margin-bottom:2px}
+.notif-content p{font-size:.8rem;color:var(--t3);line-height:1.4}
+.notif-time{font-size:.72rem;color:var(--t4);flex-shrink:0}
+.mark-all-btn{font-size:.8rem;color:var(--g1);background:none;border:none;cursor:none;font-weight:600;padding:8px 0;margin-bottom:12px}
+.mark-all-btn:hover{text-decoration:underline}
+.contact-form{background:var(--white);border:1px solid var(--b1);border-radius:var(--r2);padding:24px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:.78rem;font-weight:600;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid var(--b1);border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;color:var(--t2);background:var(--off0);outline:none;transition:border-color .25s;resize:vertical}
+.form-group textarea{min-height:120px}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--g1)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:600;border:none;cursor:none;transition:all .3s var(--ease-bounce)}
+.btn:hover{transform:translateY(-2px)}
+.btn-gold{background:var(--g1);color:#fff;width:100%;justify-content:center}
+.btn-gold:hover{background:var(--g2)}
+.btn-gold:disabled{opacity:.6}
+.success-msg{text-align:center;padding:20px;display:none}
+.success-msg svg{width:48px;height:48px;stroke:#16A34A;fill:none;stroke-width:2;margin-bottom:12px}
+.empty-state{text-align:center;padding:40px;color:var(--t4)}
+#toasts{position:fixed;bottom:28px;right:28px;z-index:9000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:12px;padding:14px 20px;border-radius:var(--r2);background:var(--white);border:1px solid var(--b1);box-shadow:0 12px 40px rgba(11,31,58,.15);font-size:.84rem;font-weight:500;pointer-events:auto;animation:toastIn .4s var(--ease-bounce)}
+.toast.out{animation:toastOut .3s forwards}
+.toast-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.toast.success .toast-pip{background:#16A34A}.toast.error .toast-pip{background:#DC2626}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(20px)}}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-ring"></div>
+
+<header id="header">
+  <div class="h-wrap">
+    <a href="/dashboard.html" class="back-btn"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></a>
+    <h2>Inbox</h2>
+  </div>
+</header>
+
+<div class="main">
+  <div class="inner">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('notifications')">Notifications</button>
+      <button class="tab-btn" onclick="switchTab('contact')">Contact</button>
+    </div>
+    <div id="notifTab">
+      <button class="mark-all-btn" id="markAllBtn" onclick="markAllRead()" style="display:none">Mark All Read</button>
+      <div class="notif-list" id="notifList"><div class="empty-state">Loading notifications...</div></div>
+    </div>
+    <div id="contactTab" style="display:none">
+      <div class="contact-form">
+        <div class="success-msg" id="contactSuccess"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg><h4 style="font-family:'Fraunces',serif;color:var(--n1)">Message Sent!</h4><p style="color:var(--t3);font-size:.85rem">We'll get back to you soon.</p></div>
+        <form id="contactForm" onsubmit="submitContact(event)">
+          <div class="form-group"><label>Name</label><input type="text" id="contactName" required></div>
+          <div class="form-group"><label>Email</label><input type="email" id="contactEmail" required></div>
+          <div class="form-group"><label>Subject</label><select id="contactSubject"><option value="">Select...</option><option>General Inquiry</option><option>Payment Issue</option><option>Course Access</option><option>Technical Support</option><option>Other</option></select></div>
+          <div class="form-group"><label>Message</label><textarea id="contactMessage" required></textarea></div>
+          <button type="submit" class="btn btn-gold" id="contactBtn">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toasts"></div>
+
+<script>
+(function(){
+'use strict';
+const token=localStorage.getItem('token');if(!token){window.location.href='/auth.html'}
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function track(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;if(cur){cur.style.left=mx+'px';cur.style.top=my+'px'}if(ring){ring.style.left=rx+'px';ring.style.top=ry+'px'}requestAnimationFrame(track)})();
+document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn,.notif-item,.tab-btn,input,select,textarea'))document.body.classList.add('cursor-expanded')});
+document.addEventListener('mouseout',e=>{if(e.target.closest('a,button,.btn,.notif-item,.tab-btn,input,select,textarea'))document.body.classList.remove('cursor-expanded')});
+
+function switchTab(tab){document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',(tab==='notifications'&&i===0)||(tab==='contact'&&i===1)));document.getElementById('notifTab').style.display=tab==='notifications'?'block':'none';document.getElementById('contactTab').style.display=tab==='contact'?'block':'none'}
+window.switchTab=switchTab;
+
+function timeAgo(dateStr){const now=new Date();const then=new Date(dateStr);const diff=Math.floor((now-then)/1000);if(diff<60)return'just now';if(diff<3600)return Math.floor(diff/60)+'m ago';if(diff<86400)return Math.floor(diff/3600)+'h ago';if(diff<604800)return Math.floor(diff/86400)+'d ago';return then.toLocaleDateString()}
+
+async function loadNotifications(){
+try{const r=await fetch('/api/user/notifications',{headers:{'Authorization':'Bearer '+token}});if(!r.ok)throw 0;const notifs=await r.json();
+const list=document.getElementById('notifList');
+if(!notifs.length){list.innerHTML='<div class="empty-state">You\'re all caught up!</div>';return}
+const unreadCount=notifs.filter(n=>!n.is_read).length;
+document.getElementById('markAllBtn').style.display=unreadCount>0?'block':'none';
+list.innerHTML=notifs.map(n=>`<div class="notif-item ${n.is_read?'read':'unread'}" onclick="markRead(${n.id})"><span class="notif-badge ${n.type||'info'}">${n.type||'info'}</span><div class="notif-content"><h4>${n.title}</h4>${n.message?`<p>${n.message}</p>`:''}</div><span class="notif-time">${timeAgo(n.created_at)}</span></div>`).join('')}catch(e){document.getElementById('notifList').innerHTML='<div class="empty-state">Failed to load notifications.</div>'}}
+
+async function markRead(id){try{await fetch('/api/user/notifications/read',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({notification_id:id})});loadNotifications()}catch(e){}}
+async function markAllRead(){try{await fetch('/api/user/notifications/read-all',{method:'PUT',headers:{'Authorization':'Bearer '+token}});loadNotifications()}catch(e){}}
+window.markRead=markRead;window.markAllRead=markAllRead;
+
+async function submitContact(e){e.preventDefault();
+const name=document.getElementById('contactName').value.trim();const email=document.getElementById('contactEmail').value.trim();
+const subject=document.getElementById('contactSubject').value;const message=document.getElementById('contactMessage').value.trim();
+const btn=document.getElementById('contactBtn');btn.textContent='Sending...';btn.disabled=true;
+try{const r=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,subject,message})});
+if(!r.ok)throw 0;document.getElementById('contactForm').style.display='none';document.getElementById('contactSuccess').style.display='block'}catch(e){alert('Failed to send. Please try again.')}
+btn.textContent='Send Message';btn.disabled=false}
+window.submitContact=submitContact;
+
+loadNotifications();
+})();
+</script>
+</body>
+</html>
