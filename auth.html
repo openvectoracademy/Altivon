@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — Altivon Academy</title>
+<meta name="description" content="Sign in to your Altivon Academy account or create a new one to start your structured learning journey.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:#2C3E55;background:linear-gradient(135deg,#FAFAF8 0%,#F4F1EB 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;cursor:none}
+:root{--n1:#0B1F3A;--n2:#112D52;--g1:#B8751A;--g2:#CF8B28;--white:#FFFFFF;--off0:#FAFAF8;--t2:#2C3E55;--t3:#5A6B7E;--t4:#94A3B5;--b1:#E2E8EF;--b2:#CED6DF;--gold-bg:rgba(184,117,26,.07);--gold-edge:rgba(184,117,26,.22);--r1:8px;--r2:14px;--r3:20px;--s1:0 1px 4px rgba(11,31,58,.06);--s3:0 12px 40px rgba(11,31,58,.11);--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-bounce:cubic-bezier(0.34,1.56,0.64,1)}
+#cursor{position:fixed;width:12px;height:12px;background:var(--g1);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .25s,height .25s,background .25s;will-change:left,top}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid rgba(184,117,26,.5);border-radius:50%;pointer-events:none;z-index:9997;transform:translate(-50%,-50%);transition:width .3s,height .3s;will-change:left,top}
+.cursor-expanded #cursor{width:18px;height:18px;background:var(--g2)}.cursor-expanded #cursor-ring{width:52px;height:52px;opacity:.6}
+@media(max-width:960px){#cursor,#cursor-ring{display:none}body{cursor:auto}}
+.auth-card{background:var(--white);border-radius:var(--r3);box-shadow:var(--s3);border:1px solid var(--b1);width:100%;max-width:460px;overflow:hidden;position:relative}
+.auth-header{text-align:center;padding:32px 28px 0}
+.logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:20px}
+.logo-icon{width:40px;height:40px;border-radius:10px;background:var(--n1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(11,31,58,.25);overflow:hidden}
+.logo-icon img{width:100%;height:100%;object-fit:contain;border-radius:10px}
+.logo-text{font-family:'Fraunces',serif;font-weight:700;font-size:1.3rem;color:var(--n1);letter-spacing:-.025em}
+.logo-text span{color:var(--g1)}
+.tabs{display:flex;border-bottom:1px solid var(--b1);margin-bottom:0}
+.tab-btn{flex:1;padding:14px;background:none;border:none;cursor:none;font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:600;color:var(--t4);position:relative;transition:color .25s}
+.tab-btn.active{color:var(--n1)}
+.tab-btn::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:var(--g1);border-radius:1px;transition:width .3s var(--ease-bounce)}
+.tab-btn.active::after{width:40px}
+.tab-content{padding:28px}
+.tab-panel{display:none;animation:fadeIn .35s var(--ease-out)}
+.tab-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:.78rem;font-weight:600;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.form-group input{width:100%;padding:11px 14px;border:1.5px solid var(--b1);border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;color:var(--t2);background:var(--off0);outline:none;transition:border-color .25s,box-shadow .25s}
+.form-group input:focus{border-color:var(--g1);box-shadow:0 0 0 3px rgba(184,117,26,.08)}
+.form-group input.error{border-color:#DC2626}
+.field-error{font-size:.74rem;color:#DC2626;margin-top:4px;display:none}
+.field-error.show{display:block}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;font-weight:600;letter-spacing:.01em;text-decoration:none;border:none;cursor:none;transition:all .3s var(--ease-bounce);white-space:nowrap;width:100%}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(0)}
+.btn-gold{background:var(--g1);color:#fff;box-shadow:0 2px 10px rgba(184,117,26,.28)}
+.btn-gold:hover{background:var(--g2);box-shadow:0 8px 28px rgba(184,117,26,.38)}
+.btn-gold:disabled{opacity:.6;pointer-events:none}
+.alert{background:#FEF2F2;border:1px solid #FECACA;color:#DC2626;padding:12px 16px;border-radius:var(--r1);font-size:.84rem;margin-bottom:16px;display:none}
+.alert.show{display:block}
+.alert.success{background:#F0FDF4;border-color:#BBF7D0;color:#16A34A}
+.pending-notice{text-align:center;padding:20px;display:none}
+.pending-notice svg{width:48px;height:48px;stroke:#F59E0B;fill:none;stroke-width:2;margin-bottom:12px}
+.pending-notice h4{font-family:'Fraunces',serif;color:var(--n1);margin-bottom:6px}
+.pending-notice p{font-size:.85rem;color:var(--t3);line-height:1.6}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+.spinner-sm{width:18px;height:18px;border:2px solid transparent;border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
+.btn.loading .spinner-sm{display:block}.btn.loading .btn-text{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.back-link{text-align:center;margin-top:16px}
+.back-link a{font-size:.84rem;color:var(--t4);text-decoration:none;transition:color .25s}
+.back-link a:hover{color:var(--g1)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-ring"></div>
+
+<div class="auth-card">
+  <div class="auth-header">
+    <a class="logo" href="/index.html">
+      <div class="logo-icon"><img src="images/site.png" alt="Altivon Academy"></div>
+      <span class="logo-text">Altivon <span>Academy</span></span>
+    </a>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
+    <button class="tab-btn" onclick="switchTab('signup')">Create Account</button>
+  </div>
+  <div class="tab-content">
+    <div class="tab-panel active" id="loginPanel">
+      <div class="alert" id="loginAlert"></div>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="your@email.com" required><span class="field-error" id="loginEmailError"></span></div>
+        <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="Your password" required minlength="6"><span class="field-error" id="loginPasswordError"></span></div>
+        <button type="submit" class="btn btn-gold" id="loginBtn"><span class="btn-text">Sign In</span><span class="spinner-sm"></span></button>
+      </form>
+    </div>
+    <div class="tab-panel" id="signupPanel">
+      <div class="alert" id="signupAlert"></div>
+      <div class="pending-notice" id="pendingNotice">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <h4>Account Created!</h4>
+        <p>Your account is pending admin approval. You'll be able to sign in once approved — usually within a few hours.</p>
+      </div>
+      <form id="signupForm" onsubmit="handleSignup(event)">
+        <div class="form-group"><label>Full Name</label><input type="text" id="signupName" placeholder="Your full name" required><span class="field-error" id="signupNameError"></span></div>
+        <div class="form-group"><label>Email</label><input type="email" id="signupEmail" placeholder="your@email.com" required><span class="field-error" id="signupEmailError"></span></div>
+        <div class="form-row">
+          <div class="form-group"><label>Phone (optional)</label><input type="text" id="signupPhone" placeholder="01XXXXXXXXX"><span class="field-error" id="signupPhoneError"></span></div>
+          <div class="form-group"><label>Institution (optional)</label><input type="text" id="signupInstitution" placeholder="Your institution"><span class="field-error" id="signupInstError"></span></div>
+        </div>
+        <div class="form-group"><label>Password</label><input type="password" id="signupPassword" placeholder="Min 6 characters" required minlength="6"><span class="field-error" id="signupPasswordError"></span></div>
+        <div class="form-group"><label>Confirm Password</label><input type="password" id="signupConfirm" placeholder="Re-enter password" required><span class="field-error" id="signupConfirmError"></span></div>
+        <button type="submit" class="btn btn-gold" id="signupBtn"><span class="btn-text">Create Account</span><span class="spinner-sm"></span></button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="back-link"><a href="/index.html">&larr; Back to Home</a></div>
+
+<script>
+(function(){
+'use strict';
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function track(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;if(cur){cur.style.left=mx+'px';cur.style.top=my+'px'}if(ring){ring.style.left=rx+'px';ring.style.top=ry+'px'}requestAnimationFrame(track)})();
+document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn,input,.tab-btn'))document.body.classList.add('cursor-expanded')});
+document.addEventListener('mouseout',e=>{if(e.target.closest('a,button,.btn,input,.tab-btn'))document.body.classList.remove('cursor-expanded')});
+
+if(localStorage.getItem('token')){window.location.href='/dashboard.html'}
+
+function generateFingerprint(){const c=[navigator.hardwareConcurrency||'u',navigator.deviceMemory||'u',screen.width+'x'+screen.height+'x'+screen.colorDepth,navigator.language,Intl.DateTimeFormat().resolvedOptions().timeZone,navigator.platform||'u',navigator.userAgent.replace(/\s+/g,'').substring(0,60)];let h=0;const s=c.join('###');for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return'fp_'+Math.abs(h).toString(36).substring(0,20)}
+
+function switchTab(tab){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(tab==='login'?'sign in':'create')));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(tab==='login'?'loginPanel':'signupPanel').classList.add('active');document.querySelectorAll('.alert').forEach(a=>a.classList.remove('show'))}
+window.switchTab=switchTab;
+
+function showAlert(id,msg,type='error'){const el=document.getElementById(id);el.textContent=msg;el.className='alert show'+(type==='success'?' success':'');setTimeout(()=>el.classList.remove('show'),5000)}
+function setLoading(btnId,loading){const btn=document.getElementById(btnId);btn.classList.toggle('loading',loading);btn.disabled=loading}
+
+async function handleLogin(e){e.preventDefault();
+const email=document.getElementById('loginEmail').value.trim();const password=document.getElementById('loginPassword').value;
+document.querySelectorAll('#loginPanel .field-error').forEach(el=>el.classList.remove('show'));
+if(!email){document.getElementById('loginEmailError').textContent='Email is required';document.getElementById('loginEmailError').classList.add('show');return}
+if(!password||password.length<6){document.getElementById('loginPasswordError').textContent='Password must be at least 6 characters';document.getElementById('loginPasswordError').classList.add('show');return}
+setLoading('loginBtn',true);
+try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,device_fingerprint:generateFingerprint()})});
+const d=await r.json();if(!r.ok){showAlert('loginAlert',d.error||'Login failed');setLoading('loginBtn',false);return}
+localStorage.setItem('token',d.token);localStorage.setItem('user',JSON.stringify(d.user));window.location.href='/dashboard.html'}catch(e){showAlert('loginAlert','Network error. Please try again.');setLoading('loginBtn',false)}}
+window.handleLogin=handleLogin;
+
+async function handleSignup(e){e.preventDefault();
+const name=document.getElementById('signupName').value.trim();const email=document.getElementById('signupEmail').value.trim();
+const phone=document.getElementById('signupPhone').value.trim();const password=document.getElementById('signupPassword').value;
+const confirm=document.getElementById('signupConfirm').value;
+document.querySelectorAll('#signupPanel .field-error').forEach(el=>el.classList.remove('show'));
+let hasError=false;
+if(!name){document.getElementById('signupNameError').textContent='Name is required';document.getElementById('signupNameError').classList.add('show');hasError=true}
+if(!email){document.getElementById('signupEmailError').textContent='Email is required';document.getElementById('signupEmailError').classList.add('show');hasError=true}
+if(phone&&!/^01\d{9}$/.test(phone)){document.getElementById('signupPhoneError').textContent='Invalid Bangladeshi phone number';document.getElementById('signupPhoneError').classList.add('show');hasError=true}
+if(!password||password.length<6){document.getElementById('signupPasswordError').textContent='Min 6 characters';document.getElementById('signupPasswordError').classList.add('show');hasError=true}
+if(password!==confirm){document.getElementById('signupConfirmError').textContent='Passwords do not match';document.getElementById('signupConfirmError').classList.add('show');hasError=true}
+if(hasError)return;
+setLoading('signupBtn',true);
+try{const r=await fetch('/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password,phone:phone||null,device_fingerprint:generateFingerprint()})});
+const d=await r.json();if(!r.ok){showAlert('signupAlert',d.error||'Signup failed');setLoading('signupBtn',false);return}
+document.getElementById('signupForm').style.display='none';document.getElementById('pendingNotice').style.display='block'}catch(e){showAlert('signupAlert','Network error. Please try again.');setLoading('signupBtn',false)}}
+window.handleSignup=handleSignup;
+})();
+</script>
+</body>
+</html>
