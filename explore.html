@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browse Programs — Altivon Academy</title>
+<meta name="description" content="Browse our complete catalog of structured courses. Filter by subject area, difficulty level, and find the perfect program for your learning goals.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:#2C3E55;background:#FAFAF8;overflow-x:hidden;cursor:none}
+:root{--n1:#0B1F3A;--n2:#112D52;--g1:#B8751A;--g2:#CF8B28;--g3:#E8A840;--white:#FFFFFF;--off0:#FAFAF8;--off1:#F4F1EB;--t1:#0B1F3A;--t2:#2C3E55;--t3:#5A6B7E;--t4:#94A3B5;--b1:#E2E8EF;--b2:#CED6DF;--gold-bg:rgba(184,117,26,.07);--gold-edge:rgba(184,117,26,.22);--r1:8px;--r2:14px;--r3:20px;--r4:28px;--hh:76px;--max:1320px;--px:clamp(20px,5vw,80px);--s1:0 1px 4px rgba(11,31,58,.06);--s2:0 4px 16px rgba(11,31,58,.08);--s3:0 12px 40px rgba(11,31,58,.11);--s4:0 24px 64px rgba(11,31,58,.14);--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-bounce:cubic-bezier(0.34,1.56,0.64,1)}
+::-webkit-scrollbar{width:7px}::-webkit-scrollbar-track{background:var(--off0)}::-webkit-scrollbar-thumb{background:var(--b2);border-radius:4px}
+#cursor{position:fixed;width:12px;height:12px;background:var(--g1);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .1s,width .25s var(--ease-out),height .25s var(--ease-out),background .25s;will-change:left,top}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid rgba(184,117,26,.5);border-radius:50%;pointer-events:none;z-index:9997;transform:translate(-50%,-50%);transition:width .3s var(--ease-out),height .3s var(--ease-out),opacity .3s,border-color .3s;will-change:left,top}
+.cursor-expanded #cursor{width:18px;height:18px;background:var(--g2)}.cursor-expanded #cursor-ring{width:52px;height:52px;opacity:.6;border-color:var(--g2)}
+@media(max-width:960px){#cursor,#cursor-ring{display:none}body{cursor:auto}}
+#header{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--hh);background:rgba(250,250,248,.82);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(226,232,239,.5);transition:transform .5s var(--ease-out),background .3s}
+#header.scrolled{background:rgba(250,250,248,.96);box-shadow:0 1px 0 rgba(226,232,239,.8),var(--s1)}
+.h-wrap{max-width:var(--max);margin:0 auto;padding:0 var(--px);height:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none}
+.logo-icon{width:38px;height:38px;border-radius:10px;background:var(--n1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(11,31,58,.25);overflow:hidden;transition:transform .3s var(--ease-bounce)}
+.logo:hover .logo-icon{transform:translateY(-2px)}
+.logo-icon img{width:100%;height:100%;object-fit:contain;border-radius:10px}
+.logo-text{font-family:'Fraunces',serif;font-weight:700;font-size:1.2rem;color:var(--n1);letter-spacing:-.025em}
+.logo-text span{color:var(--g1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 24px;border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-size:.875rem;font-weight:600;letter-spacing:.01em;text-decoration:none;border:none;cursor:none;transition:all .3s var(--ease-bounce);white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+.btn-ghost{background:transparent;color:var(--t2);border:1px solid transparent}
+.btn-ghost:hover{background:rgba(11,31,58,.05);color:var(--n1);border-color:var(--b1)}
+.btn-navy{background:var(--n1);color:#fff;box-shadow:0 2px 8px rgba(11,31,58,.2)}
+.btn-navy:hover{background:var(--n2);box-shadow:0 8px 24px rgba(11,31,58,.28)}
+.btn-gold{background:var(--g1);color:#fff;box-shadow:0 2px 10px rgba(184,117,26,.28)}
+.btn-gold:hover{background:var(--g2);box-shadow:0 8px 28px rgba(184,117,26,.38)}
+.btn-outline{background:transparent;color:var(--n1);border:1.5px solid var(--b2)}
+.btn-outline:hover{border-color:var(--g1);color:var(--g1);background:var(--gold-bg)}
+.h-btns{display:flex;align-items:center;gap:10px}
+.hero-page{background:var(--n1);padding:calc(var(--hh) + 48px)var(--px)56px;text-align:center;position:relative;overflow:hidden}
+.hero-page::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(184,117,26,.15),transparent 70%);top:-100px;right:-100px;pointer-events:none}
+.hero-page h1{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(2rem,3.5vw,2.8rem);color:var(--white);margin-bottom:12px;letter-spacing:-.03em}
+.hero-page p{color:rgba(255,255,255,.55);font-size:.95rem;max-width:500px;margin:0 auto}
+.section{padding:clamp(40px,6vw,64px)var(--px)}
+.inner{max-width:var(--max);margin:0 auto}
+.filter-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:32px;background:var(--white);border:1px solid var(--b1);border-radius:var(--r3);padding:16px 20px;box-shadow:var(--s1)}
+.filter-bar select,.filter-bar input{padding:10px 14px;border:1.5px solid var(--b1);border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;color:var(--t2);background:var(--off0);outline:none;transition:border-color .25s;min-width:160px}
+.filter-bar select:focus,.filter-bar input:focus{border-color:var(--g1)}
+.filter-bar input{flex:1;min-width:200px}
+.courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:960px){.courses-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.courses-grid{grid-template-columns:1fr}}
+.course-card{background:var(--white);border:1px solid var(--b1);border-radius:var(--r4);overflow:hidden;transition:transform .4s var(--ease-out),box-shadow .4s,border-color .3s;cursor:none}
+.course-card:hover{transform:translateY(-8px);box-shadow:var(--s4);border-color:transparent}
+.course-thumb{aspect-ratio:16/10;background:var(--n2);position:relative;overflow:hidden}
+.course-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease-out)}
+.course-card:hover .course-thumb img{transform:scale(1.05)}
+.course-thumb-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(11,31,58,.7)0%,transparent 50%)}
+.course-badge{position:absolute;top:14px;left:14px;padding:5px 13px;border-radius:100px;background:rgba(6,17,30,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);font-size:.7rem;font-weight:700;color:var(--g3);letter-spacing:.06em;text-transform:uppercase;z-index:2}
+.course-body{padding:24px}
+.course-title{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--n1);margin-bottom:8px;letter-spacing:-.02em}
+.course-desc{font-size:.84rem;line-height:1.65;color:var(--t3);margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.course-meta{display:flex;align-items:center;gap:14px;font-size:.78rem;color:var(--t4);font-weight:500;margin-bottom:16px}
+.course-meta-item{display:flex;align-items:center;gap:5px}
+.course-meta-item svg{width:13px;height:13px;stroke:var(--t4);fill:none;stroke-width:2}
+.course-footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--b1);gap:12px}
+.course-diff{font-size:.75rem;font-weight:600;color:var(--g1);text-transform:uppercase;letter-spacing:.04em}
+.course-card .btn{font-size:.8rem;padding:9px 20px}
+.empty-state{text-align:center;padding:60px 20px;color:var(--t4)}
+.empty-state svg{width:64px;height:64px;margin-bottom:16px;stroke:var(--t5);fill:none;stroke-width:1.5}
+.loading-state{text-align:center;padding:60px 20px;color:var(--t4)}
+.spinner{width:32px;height:32px;border:3px solid var(--b1);border-top-color:var(--g1);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.skeleton{background:linear-gradient(90deg,var(--b1)25%,var(--b2)50%,var(--b1)75%);background-size:300% 100%;animation:skel 1.6s ease-in-out infinite;border-radius:4px}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.payment-overlay{position:fixed;inset:0;background:rgba(11,31,58,.5);backdrop-filter:blur(4px);z-index:950;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .35s}
+.payment-overlay.active{opacity:1;pointer-events:auto}
+.payment-modal{background:var(--white);border-radius:var(--r4);padding:36px 32px;max-width:480px;width:100%;box-shadow:var(--s4);position:relative;max-height:90vh;overflow-y:auto}
+.payment-modal h3{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:var(--n1);margin-bottom:8px}
+.payment-modal p{font-size:.88rem;color:var(--t3);margin-bottom:24px}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:.8rem;font-weight:600;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+.form-group input,.form-group select{width:100%;padding:11px 14px;border:1.5px solid var(--b1);border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;color:var(--t2);background:var(--off0);outline:none;transition:border-color .25s}
+.form-group input:focus,.form-group select:focus{border-color:var(--g1)}
+.radio-group{display:flex;gap:16px}
+.radio-group label{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--t2);cursor:none;text-transform:none;letter-spacing:0;font-weight:500}
+.radio-group input[type="radio"]{accent-color:var(--g1);width:16px;height:16px}
+.info-box{background:var(--gold-bg);border:1px solid var(--gold-edge);border-radius:var(--r2);padding:14px 18px;font-size:.82rem;color:var(--g1);margin-bottom:20px;line-height:1.6}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;border:1px solid var(--b1);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:none;transition:all .25s}
+.modal-close:hover{background:var(--off0);border-color:var(--b2)}
+.modal-close svg{width:14px;height:14px;stroke:var(--t3);stroke-width:2}
+.success-state{text-align:center;padding:20px 0}
+.success-state svg{width:56px;height:56px;stroke:#16A34A;fill:none;stroke-width:2;margin-bottom:16px}
+.alert{background:#FEF2F2;border:1px solid #FECACA;color:#DC2626;padding:12px 16px;border-radius:var(--r1);font-size:.84rem;margin-bottom:16px;display:none}
+.alert.show{display:block}
+#toasts{position:fixed;bottom:28px;right:28px;z-index:9000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:12px;padding:14px 20px;border-radius:var(--r2);background:var(--white);border:1px solid var(--b1);box-shadow:var(--s4);font-size:.84rem;font-weight:500;color:var(--n1);pointer-events:auto;animation:toastIn .4s var(--ease-bounce)}
+.toast.out{animation:toastOut .3s forwards}
+.toast-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.toast.success .toast-pip{background:#16A34A}.toast.error .toast-pip{background:#DC2626}.toast.info .toast-pip{background:var(--g1)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(20px)}}
+footer{background:var(--off0);border-top:1px solid var(--b1);padding:32px var(--px);text-align:center;font-size:.82rem;color:var(--t4)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div><div id="cursor-ring"></div>
+
+<header id="header">
+  <div class="h-wrap">
+    <a class="logo" href="/index.html">
+      <div class="logo-icon"><img src="images/site.png" alt="Altivon Academy"></div>
+      <span class="logo-text">Altivon <span>Academy</span></span>
+    </a>
+    <div class="h-btns">
+      <a href="/index.html" class="btn btn-ghost">Home</a>
+      <a href="/auth.html" class="btn btn-navy" id="authBtn">Sign In</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero-page">
+  <h1>Browse Programs</h1>
+  <p>Explore our complete catalog of structured courses and find the perfect program for your learning goals.</p>
+</section>
+
+<section class="section">
+  <div class="inner">
+    <div class="filter-bar">
+      <select id="filterSubject" onchange="filterCourses()">
+        <option value="">All Subject Areas</option>
+      </select>
+      <select id="filterDifficulty" onchange="filterCourses()">
+        <option value="">All Levels</option>
+        <option value="Beginner">Beginner</option>
+        <option value="Intermediate">Intermediate</option>
+        <option value="Advanced">Advanced</option>
+      </select>
+      <input type="text" id="filterSearch" placeholder="Search courses..." oninput="debounceSearch()">
+    </div>
+    <div class="courses-grid" id="coursesGrid"><div class="loading-state"><div class="spinner"></div>Loading courses...</div></div>
+  </div>
+</section>
+
+<div class="payment-overlay" id="paymentOverlay">
+  <div class="payment-modal">
+    <button class="modal-close" onclick="closePayment()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <h3>Enroll in Course</h3>
+    <p id="paymentCourseName">Complete your enrollment to get instant access.</p>
+    <div class="alert" id="paymentAlert"></div>
+    <div id="paymentForm">
+      <div class="form-group"><label>Course</label><select id="payCourse"><option value="">Select course...</option></select></div>
+      <div class="form-group"><label>Phone Number (bKash/Nagad)</label><input type="text" id="payPhone" placeholder="01XXXXXXXXX"></div>
+      <div class="form-group"><label>Payment Method</label><div class="radio-group"><label><input type="radio" name="payMethod" value="bKash" checked> bKash</label><label><input type="radio" name="payMethod" value="Nagad"> Nagad</label></div></div>
+      <div class="form-group"><label>Transaction ID</label><input type="text" id="payTrxId" placeholder="Enter the transaction ID"></div>
+      <div class="info-box">Contact <strong>@crackers_10</strong> on Telegram for payment details. After completing the payment, enter the transaction ID above and submit for verification.</div>
+      <button class="btn btn-gold" style="width:100%" onclick="submitPayment()" id="paySubmitBtn">Submit for Verification</button>
+    </div>
+    <div class="success-state" id="paymentSuccess" style="display:none">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>
+      <h3 style="font-family:'Fraunces',serif;color:var(--n1);margin-bottom:4px">Payment Submitted!</h3>
+      <p style="color:var(--t3);font-size:.88rem">Your payment is being verified. You'll get access shortly.</p>
+    </div>
+  </div>
+</div>
+
+<footer>&copy; 2026 Altivon Academy. All rights reserved. &mdash; Protected Content</footer>
+<div id="toasts"></div>
+
+<script>
+(function(){
+'use strict';
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function track(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;if(cur){cur.style.left=mx+'px';cur.style.top=my+'px'}if(ring){ring.style.left=rx+'px';ring.style.top=ry+'px'}requestAnimationFrame(track)})();
+document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn,.course-card,.modal-close,input,select,label'))document.body.classList.add('cursor-expanded')});
+document.addEventListener('mouseout',e=>{if(e.target.closest('a,button,.btn,.course-card,.modal-close,input,select,label'))document.body.classList.remove('cursor-expanded')});
+const hdr=document.getElementById('header');let lastY=0;
+window.addEventListener('scroll',()=>{const y=window.scrollY;hdr.classList.toggle('scrolled',y>60);lastY=y},{passive:true});
+
+const token=localStorage.getItem('token');const user=JSON.parse(localStorage.getItem('user')||'null');
+const authBtn=document.getElementById('authBtn');
+if(user){authBtn.textContent='Dashboard';authBtn.href='/dashboard.html'}else{authBtn.textContent='Sign In';authBtn.href='/auth.html'}
+
+let allCourses=[];let memberships=[];
+const thumbPalettes=[{bg:'#0B1F3A',c1:'#B8751A',c2:'#CF8B28'},{bg:'#112D52',c1:'#C4821E',c2:'#E8A840'},{bg:'#163A6A',c1:'#8B5410',c2:'#B8751A'}];
+function makeSVGThumb(i){const p=thumbPalettes[i%3];return`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300"><rect fill="${p.bg}" width="480" height="300"/><circle cx="${80+i*60}" cy="${60+i*20}" r="80" fill="none" stroke="${p.c1}" stroke-width="1" opacity="0.25"/><rect x="${180+i*20}" y="${100+i*10}" width="120" height="70" rx="10" fill="none" stroke="${p.c1}" stroke-width="1.5" opacity="0.35"/></svg>`)}`}
+
+async function loadSubjectAreas(){try{const r=await fetch('/api/subject-areas');if(r.ok){const areas=await r.json();const sel=document.getElementById('filterSubject');areas.forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent=a;sel.appendChild(o)})}}catch(e){}}
+
+async function loadCourses(){const grid=document.getElementById('coursesGrid');
+try{const params=new URLSearchParams();const subj=document.getElementById('filterSubject').value;const diff=document.getElementById('filterDifficulty').value;const search=document.getElementById('filterSearch').value;
+if(subj)params.set('subject_area',subj);if(diff)params.set('difficulty',diff);if(search)params.set('search',search);
+const r=await fetch('/api/courses?'+params.toString());if(!r.ok)throw 0;allCourses=await r.json();
+if(user&&token){try{const mr=await fetch('/api/user/memberships',{headers:{'Authorization':'Bearer '+token}});if(mr.ok)memberships=await mr.json()}catch(e){}}
+renderCourses()}catch(e){grid.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>Failed to load courses. Please try again.</p></div>'}}
+
+function renderCourses(){const grid=document.getElementById('coursesGrid');
+if(!allCourses.length){grid.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg><p>No courses found. Try adjusting your filters.</p></div>';return}
+grid.innerHTML=allCourses.map((c,i)=>{const isEnrolled=memberships.some(m=>m.course_id===c.id&&m.is_active);const btnHtml=!user?`<a href="/auth.html" class="btn btn-gold">Get Started</a>`:isEnrolled?`<a href="/learn.html?course=${c.id}" class="btn btn-navy">Start Learning</a>`:`<button class="btn btn-gold" onclick="openPayment(${c.id},'${c.title.replace(/'/g,"\\'")}')">Enroll Now</button>`;
+return`<div class="course-card"><div class="course-thumb"><img src="${makeSVGThumb(i)}" alt="${c.title}"><div class="course-thumb-overlay"></div><span class="course-badge">${c.subject_area||'Course'}</span></div><div class="course-body"><h3 class="course-title">${c.title}</h3><p class="course-desc">${c.description||'A comprehensive structured course.'}</p><div class="course-meta"><span class="course-meta-item"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>${c.lectures||'Structured'} lectures</span></div><div class="course-footer"><span class="course-diff">${c.difficulty_level||'All Levels'}</span>${btnHtml}</div></div></div>`}).join('')}
+
+function filterCourses(){loadCourses()}
+let searchTimeout;function debounceSearch(){clearTimeout(searchTimeout);searchTimeout=setTimeout(loadCourses,400)}
+
+function openPayment(courseId,courseName){
+document.getElementById('payCourse').innerHTML=allCourses.map(c=>`<option value="${c.id}"${c.id===courseId?' selected':''}>${c.title}</option>`).join('');
+document.getElementById('paymentCourseName').textContent=`Enrolling in: ${courseName}`;
+document.getElementById('paymentForm').style.display='block';document.getElementById('paymentSuccess').style.display='none';
+document.getElementById('paymentAlert').classList.remove('show');document.getElementById('paymentOverlay').classList.add('active')}
+function closePayment(){document.getElementById('paymentOverlay').classList.remove('active')}
+document.getElementById('paymentOverlay').addEventListener('click',function(e){if(e.target===this)closePayment()});
+
+async function submitPayment(){
+const courseId=document.getElementById('payCourse').value;const phone=document.getElementById('payPhone').value.trim();
+const method=document.querySelector('input[name="payMethod"]:checked')?.value;const trxId=document.getElementById('payTrxId').value.trim();
+const alert=document.getElementById('paymentAlert');alert.classList.remove('show');
+if(!courseId||!phone||!trxId){alert.textContent='Please fill in all fields.';alert.classList.add('show');return}
+if(!/^01\d{9}$/.test(phone)){alert.textContent='Please enter a valid Bangladeshi phone number (01XXXXXXXXX).';alert.classList.add('show');return}
+const btn=document.getElementById('paySubmitBtn');btn.textContent='Submitting...';btn.disabled=true;
+try{const r=await fetch('/api/payment/submit',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({course_id:parseInt(courseId),phone,method,trx_id:trxId})});
+const d=await r.json();if(!r.ok){alert.textContent=d.error||'Payment submission failed.';alert.classList.add('show');btn.textContent='Submit for Verification';btn.disabled=false;return}
+document.getElementById('paymentForm').style.display='none';document.getElementById('paymentSuccess').style.display='block';
+memberships.push({course_id:parseInt(courseId),is_active:0});renderCourses()}catch(e){alert.textContent='Network error. Please try again.';alert.classList.add('show')}
+btn.textContent='Submit for Verification';btn.disabled=false}
+
+window.openPayment=openPayment;window.closePayment=closePayment;window.submitPayment=submitPayment;window.filterCourses=filterCourses;window.debounceSearch=debounceSearch;
+window.showToast=function(msg,type='info'){const w=document.getElementById('toasts'),t=document.createElement('div');t.className=`toast ${type}`;t.innerHTML=`<span class="toast-pip"></span><span>${msg}</span>`;w.appendChild(t);setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),320)},3000)};
+loadSubjectAreas();loadCourses();
+const urlParams=new URLSearchParams(window.location.search);const courseParam=urlParams.get('course');if(courseParam&&user){setTimeout(()=>openPayment(parseInt(courseParam),'Course'),500)}
+})();
+</script>
+</body>
+</html>
