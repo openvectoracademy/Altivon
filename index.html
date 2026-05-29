@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Altivon Academy — Master Real-World Skills Through Structured Learning</title>
+<meta name="description" content="Altivon Academy delivers world-class structured education with expert-led video lectures, comprehensive resources, and a proven curriculum designed for mastery.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,600;1,9..144,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ================================================================
+   RESET & ROOT
+================================================================ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-size:16px}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:#2C3E55;background:#FAFAF8;overflow-x:hidden;cursor:none}
+
+:root{
+  --n0:#040E1C;--n1:#0B1F3A;--n2:#112D52;--n3:#163A6A;--n4:#1E4D8C;
+  --g0:#8B5410;--g1:#B8751A;--g2:#CF8B28;--g3:#E8A840;--g4:#F5C96A;
+  --white:#FFFFFF;--off0:#FAFAF8;--off1:#F4F1EB;--off2:#EDE9E0;
+  --t1:#0B1F3A;--t2:#2C3E55;--t3:#5A6B7E;--t4:#94A3B5;--t5:#C4CDD6;
+  --b1:#E2E8EF;--b2:#CED6DF;
+  --gold-bg:rgba(184,117,26,.07);--gold-bg2:rgba(184,117,26,.13);
+  --gold-edge:rgba(184,117,26,.22);--gold-edge2:rgba(184,117,26,.4);
+  --navy-glow:rgba(11,31,58,.12);--gold-glow:rgba(184,117,26,.25);
+  --hh:76px;--max:1320px;--px:clamp(20px,5vw,80px);
+  --r1:8px;--r2:14px;--r3:20px;--r4:28px;--r5:40px;
+  --s1:0 1px 4px rgba(11,31,58,.06),0 2px 8px rgba(11,31,58,.04);
+  --s2:0 4px 16px rgba(11,31,58,.08),0 2px 6px rgba(11,31,58,.05);
+  --s3:0 12px 40px rgba(11,31,58,.11),0 4px 14px rgba(11,31,58,.07);
+  --s4:0 24px 64px rgba(11,31,58,.14),0 8px 24px rgba(11,31,58,.08);
+  --s5:0 40px 100px rgba(11,31,58,.18),0 16px 40px rgba(11,31,58,.10);
+  --glow-gold:0 0 0 1px var(--gold-edge),0 8px 32px var(--gold-glow);
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+  --ease-bounce:cubic-bezier(0.34,1.56,0.64,1);
+  --ease-in-out:cubic-bezier(0.4,0,0.2,1);
+}
+
+::-webkit-scrollbar{width:7px}
+::-webkit-scrollbar-track{background:var(--off0)}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--t4)}
+
+#progress{position:fixed;top:0;left:0;height:2.5px;width:0;background:linear-gradient(90deg,var(--g1),var(--g3),var(--g1));background-size:200% 100%;z-index:9999;animation:shimmerBar 3s linear infinite;box-shadow:0 0 12px rgba(184,117,26,.5)}
+@keyframes shimmerBar{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+#cursor{position:fixed;width:12px;height:12px;background:var(--g1);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .1s,width .25s var(--ease-out),height .25s var(--ease-out),background .25s;will-change:left,top}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid rgba(184,117,26,.5);border-radius:50%;pointer-events:none;z-index:9997;transform:translate(-50%,-50%);transition:width .3s var(--ease-out),height .3s var(--ease-out),opacity .3s,border-color .3s;will-change:left,top}
+.cursor-expanded #cursor{width:18px;height:18px;background:var(--g2)}
+.cursor-expanded #cursor-ring{width:52px;height:52px;opacity:.6;border-color:var(--g2)}
+@media(max-width:960px){#cursor,#cursor-ring{display:none}body{cursor:auto}}
+
+#header{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--hh);background:rgba(250,250,248,.82);backdrop-filter:blur(24px) saturate(1.5);-webkit-backdrop-filter:blur(24px) saturate(1.5);border-bottom:1px solid rgba(226,232,239,.5);transition:transform .5s var(--ease-out),background .3s,box-shadow .3s}
+#header.scrolled{background:rgba(250,250,248,.96);box-shadow:0 1px 0 rgba(226,232,239,.8),var(--s1)}
+#header.hide{transform:translateY(-100%)}
+
+.h-wrap{max-width:var(--max);margin:0 auto;padding:0 var(--px);height:100%;display:flex;align-items:center;gap:0}
+
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;flex-shrink:0}
+.logo-icon{width:38px;height:38px;border-radius:10px;background:var(--n1);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(11,31,58,.25);flex-shrink:0;transition:transform .3s var(--ease-bounce),box-shadow .3s;overflow:hidden}
+.logo:hover .logo-icon{transform:translateY(-2px);box-shadow:0 8px 20px rgba(11,31,58,.3)}
+.logo-icon img{width:100%;height:100%;object-fit:contain;border-radius:10px}
+.logo-text{font-family:'Fraunces',serif;font-weight:700;font-size:1.2rem;color:var(--n1);letter-spacing:-.025em}
+.logo-text span{color:var(--g1)}
+
+.h-nav{display:flex;align-items:center;gap:2px;margin:0 auto}
+.h-nav a{padding:8px 16px;border-radius:var(--r1);font-size:.875rem;font-weight:500;color:var(--t3);text-decoration:none;white-space:nowrap;transition:color .2s,background .2s;position:relative}
+.h-nav a::after{content:'';position:absolute;bottom:6px;left:16px;right:16px;height:1.5px;background:var(--g1);border-radius:1px;transform:scaleX(0);transition:transform .3s var(--ease-bounce);transform-origin:center}
+.h-nav a:hover{color:var(--n1);background:rgba(11,31,58,.04)}
+.h-nav a:hover::after{transform:scaleX(1)}
+
+.h-btns{display:flex;align-items:center;gap:10px;flex-shrink:0}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 24px;border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-size:.875rem;font-weight:600;letter-spacing:.01em;text-decoration:none;border:none;cursor:none;transition:all .3s var(--ease-bounce);position:relative;overflow:hidden;white-space:nowrap}
+.btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0);transition:background .3s}
+.btn:hover::before{background:rgba(255,255,255,.08)}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0)}
+
+.btn-ghost{background:transparent;color:var(--t2);border:1px solid transparent}
+.btn-ghost:hover{background:rgba(11,31,58,.05);color:var(--n1);border-color:var(--b1)}
+.btn-navy{background:var(--n1);color:#fff;box-shadow:0 2px 8px rgba(11,31,58,.2)}
+.btn-navy:hover{background:var(--n2);box-shadow:0 8px 24px rgba(11,31,58,.28)}
+.btn-gold{background:var(--g1);color:#fff;box-shadow:0 2px 10px rgba(184,117,26,.28)}
+.btn-gold:hover{background:var(--g2);box-shadow:0 8px 28px rgba(184,117,26,.38)}
+.btn-outline{background:transparent;color:var(--n1);border:1.5px solid var(--b2)}
+.btn-outline:hover{border-color:var(--g1);color:var(--g1);background:var(--gold-bg)}
+.btn-lg{padding:15px 36px;font-size:.95rem;border-radius:var(--r2)}
+
+.h-burger{display:none;background:none;border:1.5px solid var(--b1);border-radius:var(--r1);padding:9px;cursor:none;flex-direction:column;gap:5px;transition:border-color .2s}
+.h-burger:hover{border-color:var(--b2)}
+.h-burger span{display:block;width:20px;height:2px;background:var(--t2);border-radius:2px;transition:.3s var(--ease-in-out)}
+.h-burger.open span:nth-child(1){transform:rotate(45deg)translate(4px,5px)}
+.h-burger.open span:nth-child(2){opacity:0;transform:translateX(-6px)}
+.h-burger.open span:nth-child(3){transform:rotate(-45deg)translate(4px,-5px)}
+
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(340px,100vw);background:var(--white);box-shadow:var(--s5);z-index:899;transform:translateX(100%);transition:transform .45s var(--ease-out);display:flex;flex-direction:column;padding:calc(var(--hh) + 24px)28px 40px;gap:4px;border-left:1px solid var(--b1)}
+#drawer.open{transform:translateX(0)}
+#drawer a{padding:14px 16px;border-radius:var(--r2);color:var(--t2);font-weight:500;text-decoration:none;font-size:1rem;transition:background .2s,color .2s;border:1px solid transparent}
+#drawer a:hover{background:var(--off0);color:var(--n1)}
+.drawer-sep{height:1px;background:var(--b1);margin:12px 0}
+#overlay{position:fixed;inset:0;background:rgba(11,31,58,.35);backdrop-filter:blur(4px);z-index:898;opacity:0;pointer-events:none;transition:opacity .35s}
+#overlay.show{opacity:1;pointer-events:auto}
+
+.hero{min-height:100svh;background:var(--off0);display:flex;align-items:center;position:relative;overflow:hidden;padding:calc(var(--hh) + 60px)var(--px)80px}
+.hero-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(11,31,58,.045)1px,transparent 1px),linear-gradient(90deg,rgba(11,31,58,.045)1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 80% 90% at 60% 40%,black 30%,transparent 75%)}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(70px)}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(184,117,26,.11),transparent 68%);top:-200px;right:-100px;animation:orbDrift 14s ease-in-out infinite}
+.hero-orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(11,31,58,.08),transparent 68%);bottom:-100px;left:-150px;animation:orbDrift 18s ease-in-out infinite reverse}
+.hero-orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(184,117,26,.07),transparent 68%);top:40%;left:40%;animation:orbDrift 10s ease-in-out infinite 5s}
+@keyframes orbDrift{0%,100%{transform:translate(0,0)scale(1)}33%{transform:translate(40px,-50px)scale(1.06)}66%{transform:translate(-25px,30px)scale(.94)}}
+
+.hero-geo{position:absolute;animation:geoFloat 10s ease-in-out infinite}
+.hero-geo-1{top:18%;left:6%;width:64px;height:64px;border:1.5px solid rgba(184,117,26,.2);border-radius:14px;transform:rotate(15deg);animation-duration:12s;animation-delay:0s}
+.hero-geo-2{top:55%;right:7%;width:48px;height:48px;border:1.5px solid rgba(11,31,58,.12);border-radius:50%;animation-duration:15s;animation-delay:-4s}
+.hero-geo-3{bottom:22%;left:14%;width:36px;height:36px;background:rgba(184,117,26,.06);border:1px solid rgba(184,117,26,.15);border-radius:8px;transform:rotate(30deg);animation-duration:9s;animation-delay:-7s}
+@keyframes geoFloat{0%,100%{transform:translateY(0)rotate(15deg)}50%{transform:translateY(-18px)rotate(22deg)}}
+.hero-geo-2{animation-name:geoFloat2}@keyframes geoFloat2{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.hero-geo-3{animation-name:geoFloat3}@keyframes geoFloat3{0%,100%{transform:translateY(0)rotate(30deg)}50%{transform:translateY(-10px)rotate(38deg)}}
+
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:center;max-width:var(--max);margin:0 auto;width:100%}
+.hero-badge{display:inline-flex;align-items:center;gap:10px;padding:8px 18px;border-radius:100px;background:var(--gold-bg);border:1px solid var(--gold-edge);font-size:.78rem;font-weight:700;color:var(--g1);letter-spacing:.07em;text-transform:uppercase;margin-bottom:28px;animation:fadeSlideUp .7s var(--ease-out).1s both}
+.hero-badge-pulse{width:7px;height:7px;border-radius:50%;background:var(--g2);position:relative;flex-shrink:0}
+.hero-badge-pulse::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--g2);opacity:.5;animation:ripple 2.2s ease-out infinite}
+@keyframes ripple{0%{transform:scale(.8);opacity:.5}100%{transform:scale(2.4);opacity:0}}
+
+.hero-title{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(2.6rem,5vw,4.2rem);line-height:1.08;letter-spacing:-.04em;color:var(--n1);margin-bottom:22px;animation:fadeSlideUp .7s var(--ease-out).25s both}
+.hero-title em{font-style:italic;font-weight:400;background:linear-gradient(135deg,var(--g1)0%,var(--g3)60%,var(--g1)100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradientShift 4s linear infinite}
+@keyframes gradientShift{0%{background-position:0% center}100%{background-position:200% center}}
+
+.hero-desc{font-size:clamp(.95rem,1.8vw,1.1rem);line-height:1.78;color:var(--t3);max-width:500px;margin-bottom:30px;animation:fadeSlideUp .7s var(--ease-out).4s both}
+.hero-tags{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:36px;animation:fadeSlideUp .7s var(--ease-out).52s both}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;background:var(--white);border:1px solid var(--b1);border-radius:var(--r1);font-size:.8rem;font-weight:500;color:var(--t2);box-shadow:var(--s1);transition:border-color .25s,box-shadow .25s,transform .25s,color .25s}
+.hero-tag:hover{border-color:var(--gold-edge);box-shadow:var(--s2);transform:translateY(-1px);color:var(--g0)}
+.hero-tag svg{width:14px;height:14px;stroke:var(--g1);fill:none;stroke-width:2;flex-shrink:0}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:13px;animation:fadeSlideUp .7s var(--ease-out).65s both}
+
+.hero-right{display:flex;flex-direction:column;gap:16px;animation:fadeSlideUp .7s var(--ease-out).45s both}
+.hero-stat-block{background:var(--white);border:1px solid var(--b1);border-radius:var(--r4);padding:28px 32px;box-shadow:var(--s3);display:flex;align-items:center;gap:0;overflow:hidden;position:relative}
+.hero-stat-block::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g1),transparent)}
+.hero-stat-item{flex:1;text-align:center;padding:0 12px;position:relative}
+.hero-stat-item+.hero-stat-item::before{content:'';position:absolute;left:0;top:10%;bottom:10%;width:1px;background:var(--b1)}
+.hero-stat-num{font-family:'Fraunces',serif;font-weight:700;font-size:2rem;color:var(--n1);line-height:1;letter-spacing:-.04em;display:block;margin-bottom:4px}
+.hero-stat-label{font-size:.72rem;color:var(--t4);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.hero-feature-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hero-feat-card{background:var(--white);border:1px solid var(--b1);border-radius:var(--r3);padding:20px 18px;box-shadow:var(--s1);transition:border-color .3s,box-shadow .3s,transform .3s}
+.hero-feat-card:hover{border-color:var(--gold-edge);box-shadow:var(--s2);transform:translateY(-3px)}
+.hero-feat-icon{width:36px;height:36px;border-radius:var(--r1);background:var(--gold-bg);border:1px solid var(--gold-edge);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.hero-feat-icon svg{width:16px;height:16px;stroke:var(--g1);fill:none;stroke-width:2}
+.hero-feat-title{font-weight:700;font-size:.82rem;color:var(--n1);margin-bottom:3px}
+.hero-feat-desc{font-size:.74rem;color:var(--t4);line-height:1.5}
+
+.scroll-cue{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;z-index:2;animation:fadeIn 1s var(--ease-out)1.4s both;cursor:none}
+.scroll-cue:hover{opacity:.8}
+.scroll-cue-label{font-size:.67rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t4);font-weight:600}
+.scroll-cue-track{width:22px;height:38px;border:1.5px solid var(--b2);border-radius:12px;display:flex;justify-content:center;padding-top:7px}
+.scroll-cue-dot{width:4px;height:7px;background:var(--g1);border-radius:2px;animation:scrollDrop 2.2s ease-in-out infinite}
+@keyframes scrollDrop{0%,100%{transform:translateY(0);opacity:1}75%{transform:translateY(12px);opacity:0}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.marquee-wrap{background:var(--n1);padding:16px 0;overflow:hidden;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04)}
+.marquee-track{display:flex;width:max-content;animation:marqueeScroll 28s linear infinite}
+.marquee-track:hover{animation-play-state:paused}
+.marquee-item{display:flex;align-items:center;gap:16px;padding:0 28px;white-space:nowrap;font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.65)}
+.marquee-sep{width:4px;height:4px;border-radius:50%;background:var(--g2);flex-shrink:0}
+@keyframes marqueeScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+.section{padding:clamp(80px,10vw,130px)var(--px);position:relative;overflow:hidden}
+.inner{max-width:var(--max);margin:0 auto}
+.sec-label{display:inline-flex;align-items:center;gap:10px;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--g1);margin-bottom:14px}
+.sec-label-line{width:28px;height:1.5px;background:linear-gradient(90deg,var(--g1),transparent);border-radius:1px}
+.sec-title{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(2rem,4vw,3rem);line-height:1.12;letter-spacing:-.03em;color:var(--n1);margin-bottom:14px}
+.sec-title em{font-style:italic;font-weight:400;color:var(--g1)}
+.sec-sub{font-size:clamp(.9rem,1.8vw,1.05rem);line-height:1.75;color:var(--t3);max-width:540px}
+.sec-head{margin-bottom:clamp(44px,6vw,72px)}
+.center{text-align:center}.center .sec-sub{margin:0 auto}
+
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .75s var(--ease-out),transform .75s var(--ease-out)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}.d5{transition-delay:.4s}.d6{transition-delay:.48s}
+
+.values-section{background:var(--white)}
+.values-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--b1);border-radius:var(--r4);overflow:hidden}
+.value-card{background:var(--white);padding:40px 30px;position:relative;overflow:hidden;transition:background .35s}
+.value-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--g1),var(--g3));transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease-out)}
+.value-card:hover{background:var(--off0)}.value-card:hover::after{transform:scaleX(1)}
+.v-num{font-family:'Fraunces',serif;font-style:italic;font-size:3.2rem;line-height:1;letter-spacing:-.05em;color:var(--b1);transition:color .35s;margin-bottom:22px}
+.value-card:hover .v-num{color:var(--gold-bg2)}
+.v-icon{width:42px;height:42px;border-radius:var(--r1);background:var(--gold-bg);border:1px solid var(--gold-edge);display:flex;align-items:center;justify-content:center;margin-bottom:16px;transition:transform .3s var(--ease-bounce),box-shadow .3s}
+.value-card:hover .v-icon{transform:scale(1.08)translateY(-1px);box-shadow:0 6px 20px var(--gold-glow)}
+.v-icon svg{width:18px;height:18px;stroke:var(--g1);fill:none;stroke-width:2}
+.v-title{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:600;color:var(--n1);margin-bottom:9px;letter-spacing:-.01em}
+.v-desc{font-size:.86rem;line-height:1.72;color:var(--t3)}
+
+.courses-section{background:var(--off0)}
+.courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.course-card{background:var(--white);border:1px solid var(--b1);border-radius:var(--r4);overflow:hidden;transition:transform .4s var(--ease-out),box-shadow .4s,border-color .3s}
+.course-card:hover{transform:translateY(-9px);box-shadow:var(--s4);border-color:transparent}
+.course-thumb{aspect-ratio:16/10;background:var(--n2);position:relative;overflow:hidden}
+.course-thumb-fill{width:100%;height:100%;display:flex;align-items:center;justify-content:center;transition:transform .6s var(--ease-out);position:relative}
+.course-card:hover .course-thumb-fill{transform:scale(1.05)}
+.course-thumb-svg{width:100%;height:100%;position:absolute;inset:0}
+.course-thumb-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(11,31,58,.75)0%,rgba(11,31,58,.1)50%,transparent 100%)}
+.course-badge{position:absolute;top:14px;left:14px;padding:5px 13px;border-radius:100px;background:rgba(6,17,30,.75);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);font-size:.7rem;font-weight:700;color:var(--g3);letter-spacing:.06em;text-transform:uppercase;z-index:2}
+.course-body{padding:24px}
+.course-meta-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.course-tag{padding:4px 11px;border-radius:100px;font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--gold-bg);color:var(--g0);border:1px solid var(--gold-edge)}
+.course-diff{padding:4px 11px;border-radius:100px;font-size:.7rem;font-weight:500;background:var(--off1);color:var(--t3);border:1px solid var(--b1)}
+.course-title{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;color:var(--n1);margin-bottom:8px;line-height:1.28;letter-spacing:-.02em}
+.course-desc{font-size:.84rem;line-height:1.65;color:var(--t3);margin-bottom:18px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.course-footer{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--b1);gap:12px}
+.course-info{display:flex;align-items:center;gap:5px;font-size:.78rem;color:var(--t4);font-weight:500}
+.course-info svg{width:14px;height:14px;stroke:var(--t4);fill:none;stroke-width:2}
+
+.features-section{background:var(--n1)}
+.features-layout{display:grid;grid-template-columns:1fr 1fr;gap:clamp(50px,7vw,100px);align-items:start}
+.features-sticky{position:sticky;top:calc(var(--hh) + 40px)}
+.features-sticky .sec-title{color:var(--white)}
+.features-sticky .sec-sub{color:rgba(255,255,255,.55)}
+.features-sticky .sec-label{color:var(--g3)}
+.features-sticky .sec-label-line{background:linear-gradient(90deg,var(--g3),transparent)}
+.feat-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:32px}
+.feat-tag{padding:8px 16px;border-radius:100px;font-size:.78rem;font-weight:500;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.55);transition:.25s}
+.feat-tag:hover{background:var(--gold-bg2);border-color:var(--gold-edge2);color:var(--g3)}
+.features-cells{display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,.05);border-radius:var(--r4);overflow:hidden}
+.feat-cell{background:var(--n1);padding:30px 26px;display:flex;gap:18px;align-items:flex-start;transition:background .3s,transform .25s;position:relative;border-bottom:1px solid rgba(255,255,255,.05)}
+.feat-cell:last-child{border-bottom:none}
+.feat-cell:hover{background:var(--n2);transform:translateX(4px)}
+.feat-cell::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--g1);transform:scaleY(0);transition:transform .35s var(--ease-out);transform-origin:bottom}
+.feat-cell:hover::before{transform:scaleY(1)}
+.feat-cell-ico{width:44px;height:44px;flex-shrink:0;border-radius:var(--r1);background:var(--gold-bg2);border:1px solid var(--gold-edge2);display:flex;align-items:center;justify-content:center;transition:transform .3s var(--ease-bounce)}
+.feat-cell:hover .feat-cell-ico{transform:scale(1.1)}
+.feat-cell-ico svg{width:20px;height:20px;stroke:var(--g3);fill:none;stroke-width:2}
+.feat-cell-title{font-weight:700;font-size:.94rem;color:var(--white);margin-bottom:5px}
+.feat-cell-desc{font-size:.83rem;line-height:1.65;color:rgba(255,255,255,.5)}
+
+.how-section{background:var(--white)}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,40px)}
+.how-card{background:var(--off0);border:1px solid var(--b1);border-radius:var(--r4);padding:clamp(32px,4vw,52px);position:relative;overflow:hidden;transition:background .35s,border-color .35s,transform .35s,box-shadow .35s}
+.how-card:hover{background:var(--white);border-color:var(--gold-edge);transform:translateY(-5px);box-shadow:var(--s3)}
+.how-card-num{position:absolute;top:-10px;right:16px;font-family:'Fraunces',serif;font-weight:700;font-size:7rem;line-height:1;letter-spacing:-.06em;color:var(--b1);transition:color .35s;user-select:none}
+.how-card:hover .how-card-num{color:rgba(184,117,26,.09)}
+.how-card-icon{width:52px;height:52px;border-radius:var(--r2);background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(184,117,26,.3);margin-bottom:22px;transition:transform .3s var(--ease-bounce),box-shadow .3s}
+.how-card:hover .how-card-icon{transform:scale(1.08);box-shadow:0 10px 28px rgba(184,117,26,.4)}
+.how-card-icon svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2}
+.how-card-title{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;color:var(--n1);margin-bottom:10px;letter-spacing:-.02em}
+.how-card-desc{font-size:.88rem;line-height:1.78;color:var(--t3)}
+
+.testi-section{background:var(--off1);position:relative;overflow:hidden}
+.testi-bg{position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);font-family:'Fraunces',serif;font-size:clamp(5rem,14vw,13rem);font-weight:700;letter-spacing:-.05em;color:rgba(11,31,58,.035);white-space:nowrap;user-select:none;pointer-events:none}
+.testi-viewport{overflow:hidden;position:relative}
+.testi-track{display:flex;gap:24px;transition:transform .6s var(--ease-out)}
+.testi-card{flex:0 0 calc(33.333% - 16px);background:var(--white);border:1px solid var(--b1);border-radius:var(--r4);padding:32px 28px;position:relative;transition:border-color .3s,box-shadow .3s,transform .3s}
+.testi-card:hover{border-color:var(--gold-edge);box-shadow:var(--s2);transform:translateY(-3px)}
+.testi-card.featured{border-color:var(--gold-edge2);box-shadow:0 4px 20px rgba(184,117,26,.12)}
+.testi-card.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g1),var(--g3));border-radius:var(--r4)var(--r4)0 0}
+.testi-quote-mark{font-family:'Fraunces',serif;font-size:3.5rem;line-height:.8;color:var(--g1);margin-bottom:16px;opacity:.35}
+.testi-text{font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:.95rem;line-height:1.75;color:var(--t2);margin-bottom:24px}
+.testi-author{display:flex;align-items:center;gap:13px}
+.testi-ava{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--n2),var(--n1));display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:.95rem;color:#fff;border:2px solid rgba(255,255,255,.15)}
+.testi-name{font-weight:700;font-size:.88rem;color:var(--n1)}
+.testi-role{font-size:.76rem;color:var(--t4);margin-top:2px}
+.testi-controls{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:40px}
+.testi-dot{width:8px;height:8px;border-radius:100px;background:var(--b2);border:none;cursor:none;transition:width .3s var(--ease-bounce),background .3s}
+.testi-dot.active{width:26px;background:var(--g1)}
+
+.trust-section{background:var(--white);padding:clamp(44px,6vw,60px)var(--px);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1)}
+.trust-label{text-align:center;font-size:.73rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t5);margin-bottom:28px}
+.trust-logos{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:clamp(22px,4vw,52px)}
+.trust-logo{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(.9rem,2vw,1.15rem);color:var(--t5);letter-spacing:-.01em;transition:color .3s,opacity .3s}
+.trust-logo:hover{color:var(--t3)}
+
+.faq-section{background:var(--off0)}
+.faq-list{max-width:760px;display:flex;flex-direction:column;gap:8px}
+.faq-item{background:var(--white);border:1px solid var(--b1);border-radius:var(--r2);overflow:hidden;transition:border-color .3s,box-shadow .3s}
+.faq-item.open{border-color:var(--gold-edge);box-shadow:var(--s2)}
+.faq-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:20px 24px;background:none;border:none;cursor:none;text-align:left;gap:16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.93rem;font-weight:600;color:var(--n1);transition:color .25s}
+.faq-btn:hover{color:var(--g0)}.faq-item.open .faq-btn{color:var(--g1)}
+.faq-ico{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--off0);border:1.5px solid var(--b1);display:flex;align-items:center;justify-content:center;transition:background .25s,border-color .25s,transform .35s var(--ease-bounce)}
+.faq-item.open .faq-ico{background:var(--gold-bg);border-color:var(--gold-edge);transform:rotate(45deg)}
+.faq-ico svg{width:12px;height:12px;stroke:var(--t3);fill:none;stroke-width:2.5;transition:stroke .25s}
+.faq-item.open .faq-ico svg{stroke:var(--g1)}
+.faq-body{max-height:0;overflow:hidden;transition:max-height .4s var(--ease-out),padding .4s var(--ease-out)}
+.faq-body.open{max-height:240px;padding-bottom:20px}
+.faq-body-inner{padding:0 24px;font-size:.88rem;line-height:1.82;color:var(--t3)}
+
+.cta-section{background:var(--n1);padding:clamp(80px,11vw,130px)var(--px);text-align:center;position:relative;overflow:hidden}
+.cta-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+.cta-glow-1{width:500px;height:500px;background:radial-gradient(circle,rgba(184,117,26,.18),transparent 68%);top:-200px;left:-100px}
+.cta-glow-2{width:400px;height:400px;background:radial-gradient(circle,rgba(184,117,26,.12),transparent 68%);bottom:-100px;right:-80px}
+.cta-inner{position:relative;z-index:1;max-width:660px;margin:0 auto}
+.cta-section .sec-title{color:var(--white);font-size:clamp(2.2rem,5vw,3.6rem)}
+.cta-section .sec-sub{color:rgba(255,255,255,.55);margin:0 auto 42px}
+.cta-btns{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:14px}
+
+footer{background:var(--off0);border-top:1px solid var(--b1)}
+.footer-main{max-width:var(--max);margin:0 auto;padding:clamp(56px,8vw,80px)var(--px)0;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:clamp(30px,5vw,60px);margin-bottom:0}
+.footer-brand .logo{margin-bottom:16px}
+.footer-tagline{font-size:.855rem;line-height:1.78;color:var(--t3);max-width:270px;margin-bottom:24px}
+.footer-socials{display:flex;gap:10px}
+.soc-btn{width:36px;height:36px;border-radius:var(--r1);background:var(--white);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:border-color .25s,background .25s,transform .25s,box-shadow .25s}
+.soc-btn:hover{border-color:var(--gold-edge);background:var(--gold-bg);transform:translateY(-3px);box-shadow:0 6px 16px rgba(184,117,26,.18)}
+.soc-btn svg{width:15px;height:15px;stroke:var(--t3);fill:none;stroke-width:2;transition:stroke .25s}
+.soc-btn:hover svg{stroke:var(--g1)}
+.foot-col-title{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--n1);margin-bottom:18px}
+.foot-links{list-style:none;display:flex;flex-direction:column;gap:9px}
+.foot-links a{font-size:.86rem;color:var(--t4);text-decoration:none;transition:color .2s,padding-left .2s;display:block}
+.foot-links a:hover{color:var(--g1);padding-left:4px}
+.footer-bottom{max-width:var(--max);margin:0 auto;padding:clamp(20px,3vw,28px)var(--px);border-top:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.foot-copy{font-size:.79rem;color:var(--t4)}
+.foot-copy strong{color:var(--g1);font-weight:600}
+.foot-badge{padding:5px 12px;border-radius:100px;background:var(--gold-bg);border:1px solid var(--gold-edge);font-size:.7rem;font-weight:700;color:var(--g0);letter-spacing:.06em}
+
+#toasts{position:fixed;bottom:28px;right:28px;z-index:9000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:12px;padding:14px 20px;border-radius:var(--r2);background:var(--white);border:1px solid var(--b1);box-shadow:var(--s4);font-size:.84rem;font-weight:500;color:var(--n1);pointer-events:auto;min-width:220px;animation:toastIn .4s var(--ease-bounce)}
+.toast.out{animation:toastOut .3s var(--ease-in-out)forwards}
+.toast-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.toast.success .toast-pip{background:#16A34A}.toast.error .toast-pip{background:#DC2626}.toast.info .toast-pip{background:var(--g1)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(20px)}}
+
+.skeleton{background:linear-gradient(90deg,var(--b1)25%,var(--b2)50%,var(--b1)75%);background-size:300% 100%;animation:skel 1.6s ease-in-out infinite;border-radius:4px}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+@media(max-width:1100px){.hero-inner{grid-template-columns:1fr;max-width:640px}.hero-right{order:2}.hero-feature-cards{grid-template-columns:repeat(4,1fr)}.features-layout{grid-template-columns:1fr}.features-sticky{position:static}.footer-main{grid-template-columns:1fr 1fr}}
+@media(max-width:960px){.h-nav{display:none}.h-btns{display:none}.h-burger{display:flex}.courses-grid{grid-template-columns:1fr 1fr}.values-grid{grid-template-columns:1fr 1fr}.testi-card{flex:0 0 calc(50% - 12px)}.how-grid{grid-template-columns:1fr}}
+@media(max-width:640px){.courses-grid{grid-template-columns:1fr}.hero-feature-cards{grid-template-columns:1fr 1fr}.testi-card{flex:0 0 100%}.footer-main{grid-template-columns:1fr}.footer-bottom{flex-direction:column;text-align:center}}
+@media(max-width:480px){.values-grid{grid-template-columns:1fr}.hero-stat-block{flex-direction:column;gap:20px}.hero-stat-item+.hero-stat-item::before{display:none}.hero-stat-item{padding:0;border-top:1px solid var(--b1);width:100%}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- HEADER -->
+<header id="header">
+  <div class="h-wrap">
+    <a class="logo" href="#">
+      <div class="logo-icon">
+        <img src="images/site.png" alt="Altivon Academy">
+      </div>
+      <span class="logo-text">Altivon <span>Academy</span></span>
+    </a>
+    <nav class="h-nav">
+      <a href="#courses">Programs</a>
+      <a href="#features">Platform</a>
+      <a href="#how">Process</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="h-btns">
+      <a href="/auth.html" class="btn btn-ghost">Sign In</a>
+      <a href="/auth.html" class="btn btn-gold">Get Started</a>
+    </div>
+    <button class="h-burger" id="burger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div id="overlay"></div>
+<nav id="drawer">
+  <a href="#courses">Programs</a>
+  <a href="#features">Platform</a>
+  <a href="#how">Process</a>
+  <a href="#faq">FAQ</a>
+  <div class="drawer-sep"></div>
+  <a href="/auth.html" style="font-weight:600;color:var(--n1)">Sign In</a>
+  <a href="/auth.html" class="btn btn-gold" style="justify-content:center;margin-top:4px">Get Started Free</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-canvas">
+    <div class="hero-grid"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+  </div>
+  <div class="hero-geo hero-geo-1"></div>
+  <div class="hero-geo hero-geo-2"></div>
+  <div class="hero-geo hero-geo-3"></div>
+
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badge"><span class="hero-badge-pulse"></span>World-Class Learning Platform</div>
+      <h1 class="hero-title">Master skills with<br><em>structured</em> education</h1>
+      <p class="hero-desc">Expert-led video lectures, comprehensive PDF resources, and a rigorously designed curriculum—built to take you from foundational concepts to genuine mastery.</p>
+      <div class="hero-tags">
+        <span class="hero-tag"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>Structured Curriculum</span>
+        <span class="hero-tag"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Self-Paced</span>
+        <span class="hero-tag"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PDF Resources</span>
+        <span class="hero-tag"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Progress Tracking</span>
+      </div>
+      <div class="hero-ctas">
+        <a href="#courses" class="btn btn-gold btn-lg">Explore Programs<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        <a href="/auth.html" class="btn btn-outline btn-lg">Create Free Account</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat-block">
+        <div class="hero-stat-item"><span class="hero-stat-num" id="stat-courses">—</span><span class="hero-stat-label">Courses</span></div>
+        <div class="hero-stat-item"><span class="hero-stat-num" id="stat-lectures">—</span><span class="hero-stat-label">Lectures</span></div>
+        <div class="hero-stat-item"><span class="hero-stat-num" id="stat-students">—</span><span class="hero-stat-label">Students</span></div>
+      </div>
+      <div class="hero-feature-cards">
+        <div class="hero-feat-card"><div class="hero-feat-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><div class="hero-feat-title">HD Video Player</div><div class="hero-feat-desc">Custom player, speed &amp; quality controls</div></div>
+        <div class="hero-feat-card"><div class="hero-feat-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="hero-feat-title">Downloadable PDFs</div><div class="hero-feat-desc">Comprehensive notes for every lecture</div></div>
+        <div class="hero-feat-card"><div class="hero-feat-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><div class="hero-feat-title">Deep Structure</div><div class="hero-feat-desc">Subject → Paper → Chapter → Lecture</div></div>
+        <div class="hero-feat-card"><div class="hero-feat-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3"/></svg></div><div class="hero-feat-title">Mobile Ready</div><div class="hero-feat-desc">Perfect on any device, anywhere</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue" onclick="document.getElementById('values').scrollIntoView({behavior:'smooth'})">
+    <div class="scroll-cue-track"><div class="scroll-cue-dot"></div></div>
+    <span class="scroll-cue-label">Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap" aria-hidden="true"><div class="marquee-track" id="marquee"></div></div>
+
+<!-- VALUES -->
+<section class="section values-section" id="values">
+  <div class="inner">
+    <div class="sec-head center reveal">
+      <div class="sec-label"><span class="sec-label-line"></span>Why Altivon</div>
+      <h2 class="sec-title">Built for <em>serious</em> learning</h2>
+      <p class="sec-sub">Every element is designed around one goal: genuine skill acquisition through structured, deliberate practice — not passive consumption.</p>
+    </div>
+    <div class="values-grid">
+      <div class="value-card reveal d1"><div class="v-num">01</div><div class="v-icon"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg></div><h3 class="v-title">Deep Structure</h3><p class="v-desc">A complete hierarchy from subject to lecture ensures you always know where you are and where you're going — no confusion, no gaps.</p></div>
+      <div class="value-card reveal d2"><div class="v-num">02</div><div class="v-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><h3 class="v-title">Genuine Depth</h3><p class="v-desc">We go far beyond surface tutorials. Each concept is explored thoroughly, with instructor insight and supporting materials at every level.</p></div>
+      <div class="value-card reveal d3"><div class="v-num">03</div><div class="v-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><h3 class="v-title">Self-Paced Freedom</h3><p class="v-desc">No deadlines, no pressure. Learn at the speed that works for you — pause, rewind, revisit any lecture whenever you need to.</p></div>
+      <div class="value-card reveal d4"><div class="v-num">04</div><div class="v-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><h3 class="v-title">Rich Resources</h3><p class="v-desc">Downloadable PDFs, reference sheets, and course-level materials accompany every lecture so your learning continues offline too.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section class="section courses-section" id="courses">
+  <div class="inner">
+    <div class="sec-head reveal" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:20px">
+      <div><div class="sec-label"><span class="sec-label-line"></span>Programs</div><h2 class="sec-title" style="margin-bottom:0">Explore our <em>courses</em></h2></div>
+      <a href="/explore.html" class="btn btn-outline" style="flex-shrink:0">View All Programs<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <div class="courses-grid" id="courses-grid"><!-- JS renders --></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section features-section" id="features">
+  <div class="inner">
+    <div class="features-layout">
+      <div class="features-sticky reveal">
+        <div class="sec-label"><span class="sec-label-line"></span>Platform</div>
+        <h2 class="sec-title">Everything you need, <em>nowhere else</em></h2>
+        <p class="sec-sub">A complete learning environment built for focus and retention — not distraction and passive watching.</p>
+        <div class="feat-tags"><span class="feat-tag">Video Lectures</span><span class="feat-tag">PDF Notes</span><span class="feat-tag">Speed Control</span><span class="feat-tag">Quality Selection</span><span class="feat-tag">Progress Dots</span><span class="feat-tag">Mobile First</span><span class="feat-tag">Notifications</span><span class="feat-tag">Dashboard</span></div>
+      </div>
+      <div class="features-cells reveal d2">
+        <div class="feat-cell"><div class="feat-cell-ico"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div><div class="feat-cell-body"><div class="feat-cell-title">Premium Video Player</div><div class="feat-cell-desc">Custom-built player with speed control (0.25×–3.5×), quality selection, keyboard shortcuts, and mobile double-tap skip.</div></div></div>
+        <div class="feat-cell"><div class="feat-cell-ico"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><div class="feat-cell-body"><div class="feat-cell-title">Structured Curriculum</div><div class="feat-cell-desc">Subject → Paper → Chapter → Lecture hierarchy. A logical, navigable roadmap through every course — always know exactly where you are.</div></div></div>
+        <div class="feat-cell"><div class="feat-cell-ico"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div class="feat-cell-body"><div class="feat-cell-title">Downloadable PDF Resources</div><div class="feat-cell-desc">Per-lecture notes and course-level resource packs — download everything, study offline, reference anytime.</div></div></div>
+        <div class="feat-cell"><div class="feat-cell-ico"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div><div class="feat-cell-body"><div class="feat-cell-title">Visual Progress Tracking</div><div class="feat-cell-desc">Color-coded progress indicators at every level. Green, orange, grey — see your advancement at a single glance.</div></div></div>
+        <div class="feat-cell"><div class="feat-cell-ico"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div><div class="feat-cell-body"><div class="feat-cell-title">Smart Notification Inbox</div><div class="feat-cell-desc">Announcements and updates delivered to your inbox with read/unread state, type badges, and one-click mark-all-read.</div></div></div>
+        <div class="feat-cell"><div class="feat-cell-ico"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3"/></svg></div><div class="feat-cell-body"><div class="feat-cell-title">Seamless Mobile Experience</div><div class="feat-cell-desc">Fully responsive across every device. The same polished experience on your phone, tablet, or desktop — no compromises.</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how-section" id="how">
+  <div class="inner">
+    <div class="sec-head center reveal"><div class="sec-label"><span class="sec-label-line"></span>Process</div><h2 class="sec-title">Up and learning in <em>two steps</em></h2><p class="sec-sub">Getting started is simple. You're inside your first course within minutes of signing up.</p></div>
+    <div class="how-grid">
+      <div class="how-card reveal d1"><div class="how-card-num">01</div><div class="how-card-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><h3 class="how-card-title">Create your account</h3><p class="how-card-desc">Sign up with your email in under a minute. Once approved by our team, you get instant access to your student dashboard to browse all available programs and enroll.</p></div>
+      <div class="how-card reveal d2"><div class="how-card-num">02</div><div class="how-card-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><h3 class="how-card-title">Enroll &amp; start learning</h3><p class="how-card-desc">Choose your program, complete enrollment via bKash or Nagad, and unlock the full course tree instantly upon payment verification. Work through the curriculum entirely at your own pace.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section testi-section" id="testimonials">
+  <div class="testi-bg" aria-hidden="true">ALTIVON</div>
+  <div class="inner">
+    <div class="sec-head center reveal"><div class="sec-label"><span class="sec-label-line"></span>Students</div><h2 class="sec-title">What learners <em>say</em></h2></div>
+    <div class="testi-viewport reveal"><div class="testi-track" id="testi-track"></div></div>
+    <div class="testi-controls" id="testi-dots"></div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<div class="trust-section">
+  <div class="inner">
+    <p class="trust-label">Trusted by students from</p>
+    <div class="trust-logos"><span class="trust-logo">University of Dhaka</span><span class="trust-logo">BUET</span><span class="trust-logo">North South University</span><span class="trust-logo">BRAC University</span><span class="trust-logo">IUT</span><span class="trust-logo">DU Medical</span></div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<section class="section faq-section" id="faq">
+  <div class="inner" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,6vw,80px);align-items:start">
+    <div class="reveal"><div class="sec-label"><span class="sec-label-line"></span>FAQ</div><h2 class="sec-title">Common <em>questions</em></h2><p class="sec-sub" style="margin-bottom:28px">Can't find your answer? Reach us through the support inbox inside your student dashboard.</p><a href="/auth.html" class="btn btn-navy">Create Account &amp; Ask<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div>
+    <div class="faq-list reveal d2">
+      <div class="faq-item"><button class="faq-btn" onclick="faqToggle(this)">How do I access a course after enrolling?<span class="faq-ico"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-body"><p class="faq-body-inner">Once your payment is verified by our team — typically within a few hours — your membership is activated instantly. Your full course tree is immediately accessible from the dashboard: all subjects, papers, chapters, and lectures.</p></div></div>
+      <div class="faq-item"><button class="faq-btn" onclick="faqToggle(this)">What payment methods are accepted?<span class="faq-ico"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-body"><p class="faq-body-inner">We currently support bKash and Nagad mobile banking. Contact us on Telegram (@crackers_10) for the payment number, complete your transfer, then enter the transaction ID on the enrollment form. Our team verifies and activates within hours.</p></div></div>
+      <div class="faq-item"><button class="faq-btn" onclick="faqToggle(this)">How long does my membership last?<span class="faq-ico"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-body"><p class="faq-body-inner">Each course membership is valid for 365 days from the activation date. Expiry dates are always visible on your dashboard, color-coded by how much time remains. Extensions can be purchased before expiry.</p></div></div>
+      <div class="faq-item"><button class="faq-btn" onclick="faqToggle(this)">Can I download PDF resources?<span class="faq-ico"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-body"><p class="faq-body-inner">Yes — all PDFs attached to lectures and course-level resources are fully downloadable and included in your membership. Save them locally, print them, study offline. No additional fees for any resource.</p></div></div>
+      <div class="faq-item"><button class="faq-btn" onclick="faqToggle(this)">Does Altivon work on mobile?<span class="faq-ico"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button><div class="faq-body"><p class="faq-body-inner">Absolutely. Altivon is fully responsive across all devices. The video player supports mobile double-tap skip, touch-based seeking, and adapts flawlessly to any screen size — phone, tablet, or desktop.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-glow cta-glow-1"></div><div class="cta-glow cta-glow-2"></div>
+  <div class="cta-inner reveal">
+    <div class="sec-label" style="justify-content:center;color:var(--g3)"><span class="sec-label-line" style="background:linear-gradient(90deg,transparent,var(--g3))"></span>Start Today<span class="sec-label-line" style="background:linear-gradient(90deg,var(--g3),transparent)"></span></div>
+    <h2 class="sec-title" style="color:var(--white);font-size:clamp(2.2rem,5vw,3.6rem)">Ready to build <em style="color:var(--g3)">real skills?</em></h2>
+    <p class="sec-sub" style="color:rgba(255,255,255,.5);margin:0 auto 44px">Join thousands of students already learning with Altivon. Create your free account today and explore programs built for genuine mastery — not passive watching.</p>
+    <div class="cta-btns"><a href="/auth.html" class="btn btn-gold btn-lg">Create Free Account<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a><a href="#courses" class="btn btn-lg" style="background:rgba(255,255,255,.07);color:rgba(255,255,255,.8);border:1.5px solid rgba(255,255,255,.15)">Browse Programs</a></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-main">
+    <div class="footer-brand">
+      <a class="logo" href="#">
+        <div class="logo-icon"><img src="images/site.png" alt="Altivon Academy"></div>
+        <span class="logo-text">Altivon <span>Academy</span></span>
+      </a>
+      <p class="footer-tagline">A world-class structured learning platform designed for students who take their education seriously.</p>
+      <div class="footer-socials">
+        <a class="soc-btn" href="#" aria-label="Twitter"><svg viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg></a>
+        <a class="soc-btn" href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        <a class="soc-btn" href="#" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-1.96C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.94 1.96C5.12 20 12 20 12 20s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" style="fill:var(--off0)"/></svg></a>
+        <a class="soc-btn" href="#" aria-label="Telegram"><svg viewBox="0 0 24 24"><path d="M21.198 2.433a2.242 2.242 0 0 0-1.022.215l-16.5 6.933c-1.078.453-1.068 1.083-.194 1.362l4.232 1.321 1.63 4.956c.197.597.437.84.91.84.354 0 .553-.17.803-.41l2.411-2.353 4.738 3.5c.876.485 1.507.235 1.724-.811l2.702-12.73c.317-1.306-.497-1.894-1.434-1.823z"/></svg></a>
+      </div>
+    </div>
+    <div><div class="foot-col-title">Learning</div><ul class="foot-links"><li><a href="#courses">All Programs</a></li><li><a href="#features">Platform Features</a></li><li><a href="#how">How It Works</a></li><li><a href="/explore.html">Browse Courses</a></li></ul></div>
+    <div><div class="foot-col-title">Account</div><ul class="foot-links"><li><a href="/auth.html">Sign In</a></li><li><a href="/auth.html">Create Account</a></li><li><a href="/dashboard.html">Dashboard</a></li><li><a href="/inbox.html">Notifications</a></li></ul></div>
+    <div><div class="foot-col-title">Company</div><ul class="foot-links"><li><a href="#">About Us</a></li><li><a href="/inbox.html">Contact</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Service</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span class="foot-copy">&copy; 2026 <strong>Altivon Academy</strong>. All rights reserved.</span><span class="foot-badge">Protected Content</span></div>
+</footer>
+
+<div id="toasts"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---- Cursor ---- */
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function trackRing(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;if(cur){cur.style.left=mx+'px';cur.style.top=my+'px'}if(ring){ring.style.left=rx+'px';ring.style.top=ry+'px'}requestAnimationFrame(trackRing)})();
+const interactors='a,button,.btn,.course-card,.value-card,.feat-cell,.how-card,.testi-card,.faq-btn,.hero-feat-card,.h-burger,.soc-btn,.testi-dot';
+document.addEventListener('mouseover',e=>{if(e.target.closest(interactors))document.body.classList.add('cursor-expanded')});
+document.addEventListener('mouseout',e=>{if(e.target.closest(interactors))document.body.classList.remove('cursor-expanded')});
+
+/* ---- Scroll progress ---- */
+const prog=document.getElementById('progress');
+window.addEventListener('scroll',()=>{const p=window.scrollY/(document.body.scrollHeight-window.innerHeight)*100;prog.style.width=Math.min(p,100)+'%'},{passive:true});
+
+/* ---- Header ---- */
+const hdr=document.getElementById('header');let lastY=0;
+window.addEventListener('scroll',()=>{const y=window.scrollY;hdr.classList.toggle('scrolled',y>60);if(y>lastY&&y>120)hdr.classList.add('hide');else hdr.classList.remove('hide');lastY=y},{passive:true});
+
+/* ---- Mobile drawer ---- */
+const burger=document.getElementById('burger'),drawer=document.getElementById('drawer'),overlay=document.getElementById('overlay');
+function closeDrw(){burger.classList.remove('open');drawer.classList.remove('open');overlay.classList.remove('show');document.body.style.overflow=''}
+burger.addEventListener('click',()=>{if(drawer.classList.contains('open'))closeDrw();else{burger.classList.add('open');drawer.classList.add('open');overlay.classList.add('show');document.body.style.overflow='hidden'}});
+overlay.addEventListener('click',closeDrw);drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeDrw));
+
+/* ---- Smooth anchor ---- */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}})});
+
+/* ---- Marquee ---- */
+const items=['Structured Curriculum','Self-Paced Learning','Expert Video Lectures','Downloadable PDFs','Progress Tracking','Premium Player','Mobile Friendly','Student Dashboard','Notification Inbox','Deep Curriculum'];
+const m=document.getElementById('marquee');
+m.innerHTML=[...items,...items].map(t=>`<span class="marquee-item"><span class="marquee-sep"></span>${t}</span>`).join('')+[...items,...items].map(t=>`<span class="marquee-item"><span class="marquee-sep"></span>${t}</span>`).join('');
+
+/* ---- Stats ---- */
+function countUp(el,target,suffix=''){const dur=1800,start=performance.now();function step(now){const p=Math.min((now-start)/dur,1),ease=1-Math.pow(1-p,3),v=Math.round(ease*target);el.textContent=v>=1000?(v>=10000?Math.round(v/1000)+'k':v.toLocaleString())+suffix:v+suffix;if(p<1)requestAnimationFrame(step);else el.textContent=target>=1000?(target>=10000?Math.round(target/1000)+'k':target.toLocaleString())+suffix:target+suffix}requestAnimationFrame(step)}
+async function loadStats(){try{const r=await fetch('/api/stats');if(!r.ok)throw 0;const d=await r.json();countUp(document.getElementById('stat-courses'),d.courses||0);countUp(document.getElementById('stat-lectures'),d.lectures||0,'+');countUp(document.getElementById('stat-students'),d.students||0,'+')}catch{countUp(document.getElementById('stat-courses'),40);countUp(document.getElementById('stat-lectures'),800,'+');countUp(document.getElementById('stat-students'),12000,'+')}}
+
+/* ---- Course Thumbnails ---- */
+const thumbPalettes=[{bg:'#0B1F3A',c1:'#B8751A',c2:'#CF8B28'},{bg:'#112D52',c1:'#C4821E',c2:'#E8A840'},{bg:'#163A6A',c1:'#8B5410',c2:'#B8751A'}];
+function makeSVGThumb(i){const p=thumbPalettes[i%thumbPalettes.length];return`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300"><rect fill="${p.bg}" width="480" height="300"/><circle cx="${80+i*60}" cy="${60+i*20}" r="80" fill="none" stroke="${p.c1}" stroke-width="1" opacity="0.25"/><circle cx="${360-i*30}" cy="${240-i*10}" r="120" fill="none" stroke="${p.c2}" stroke-width="1" opacity="0.15"/><rect x="${180+i*20}" y="${100+i*10}" width="120" height="70" rx="10" fill="none" stroke="${p.c1}" stroke-width="1.5" opacity="0.35"/><path d="M200 140 l25 20 l-25 20 Z" fill="${p.c1}" opacity="0.5"/></svg>`)}`}
+
+/* ---- Courses ---- */
+const demoData=[
+  {id:1,title:'Advanced Mathematics',subject_area:'Mathematics',difficulty_level:'Intermediate',description:'Master calculus, linear algebra, and real analysis through a meticulously structured curriculum with video lectures and comprehensive notes.',lectures:142},
+  {id:2,title:'Physics Foundations',subject_area:'Physics',difficulty_level:'Beginner',description:'A complete journey from Newtonian mechanics to electromagnetism — structured, guided, and supported with downloadable resources.',lectures:98},
+  {id:3,title:'Organic Chemistry',subject_area:'Chemistry',difficulty_level:'Advanced',description:'Deep-dive into reaction mechanisms, stereochemistry, and spectroscopic analysis with expert-led instruction and detailed PDF notes.',lectures:115},
+];
+async function loadCourses(){const grid=document.getElementById('courses-grid');
+grid.innerHTML=[1,2,3].map(()=>`<div class="course-card"><div class="course-thumb"><div style="width:100%;height:100%;aspect-ratio:16/10" class="skeleton"></div></div><div class="course-body"><div class="skeleton" style="height:12px;width:40%;margin-bottom:12px"></div><div class="skeleton" style="height:18px;width:80%;margin-bottom:8px"></div><div class="skeleton" style="height:12px;width:100%;margin-bottom:6px"></div><div class="skeleton" style="height:12px;width:70%;margin-bottom:20px"></div></div><div class="course-footer"><div class="skeleton" style="height:12px;width:25%"></div><div class="skeleton" style="height:36px;width:100px;border-radius:8px"></div></div></div>`).join('');
+let courses=demoData;try{const r=await fetch('/api/courses?limit=6');if(r.ok){const data=await r.json();if(data&&data.length)courses=data}}catch(e){}
+setTimeout(()=>{grid.innerHTML=courses.slice(0,6).map((c,i)=>`<div class="course-card reveal d${(i%3)+1}"><div class="course-thumb"><div class="course-thumb-fill"><img class="course-thumb-svg" src="${makeSVGThumb(i)}" alt="${c.title}" style="width:100%;height:100%;object-fit:cover"><div class="course-thumb-overlay"></div></div><span class="course-badge">${c.subject_area||'Course'}</span></div><div class="course-body"><div class="course-meta-row"><span class="course-tag">${c.subject_area||'Course'}</span><span class="course-diff">${c.difficulty_level||'All Levels'}</span></div><h3 class="course-title">${c.title}</h3><p class="course-desc">${c.description||'A comprehensive structured course built for genuine skill development and mastery.'}</p><div class="course-footer"><span class="course-info"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>${c.lectures||'Structured'} lectures</span><a href="/explore.html?course=${c.id}" class="btn btn-gold" style="padding:9px 20px;font-size:.8rem">Enroll Now</a></div></div></div>`).join('');document.querySelectorAll('.course-card.reveal').forEach(el=>observer.observe(el))},600)}
+
+/* ---- IntersectionObserver ---- */
+const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');observer.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+const heroStats=document.querySelector('.hero-stat-block');if(heroStats){const so=new IntersectionObserver(entries=>{if(entries[0].isIntersecting){loadStats();so.disconnect()}},{threshold:.5});so.observe(heroStats)}
+
+/* ---- Testimonials ---- */
+const testimonialData=[{initials:'RK',name:'Rahul Khan',role:'Computer Science Student',text:'The structured hierarchy is genuinely transformative. I finally know exactly where I am in a course and what\'s coming next. No other platform gets this right.',featured:true},{initials:'SA',name:'Samira Ahmed',role:'Engineering Graduate',text:'The PDF resources with every lecture are exceptional. I downloaded the entire course and studied offline during my commute — genuinely transformed my preparation.',featured:false},{initials:'NI',name:'Nabil Islam',role:'Self-Taught Developer',text:'The custom video player is the best I\'ve ever seen on a learning platform. Speed control, quality selection — designed like they actually thought about learners, not just viewers.',featured:false},{initials:'FM',name:'Fatima Mahmud',role:'Medical Student',text:'Worth every penny. The content depth is professional, the support team is responsive, and the mobile experience is just as polished as desktop. Altivon is different.',featured:false},{initials:'TH',name:'Tariq Hossain',role:'Working Professional',text:'I signed up skeptically and finished the first full course in two weeks. Self-paced plus structured beats every other format I\'ve tried for actual skill-building.',featured:false},{initials:'ZR',name:'Zara Rahman',role:'Secondary School Student',text:'No distracting recommended videos, no UI clutter — just clean, focused learning. The progress tracking keeps me motivated to continue every single session.',featured:false}];
+const track=document.getElementById('testi-track'),dotsWrap=document.getElementById('testi-dots');
+if(track){track.innerHTML=testimonialData.map(t=>`<div class="testi-card${t.featured?' featured':''}"><div class="testi-quote-mark">"</div><p class="testi-text">${t.text}</p><div class="testi-author"><div class="testi-ava">${t.initials}</div><div><div class="testi-name">${t.name}</div><div class="testi-role">${t.role}</div></div></div></div>`).join('')}
+const allCards=track?[...track.querySelectorAll('.testi-card')]:[];let perSlide=()=>window.innerWidth<640?1:window.innerWidth<1100?2:3,curSlide=0,totalSlides=()=>Math.ceil(allCards.length/perSlide()),autoTimer;
+function buildDots(){dotsWrap.innerHTML='';for(let i=0;i<totalSlides();i++){const d=document.createElement('button');d.className='testi-dot'+(i===curSlide?' active':'');d.setAttribute('aria-label',`Slide ${i+1}`);d.addEventListener('click',()=>{goSlide(i);resetAuto()});dotsWrap.appendChild(d)}}
+function goSlide(n){curSlide=Math.max(0,Math.min(n,totalSlides()-1));const cardW=allCards[0]?allCards[0].offsetWidth+24:0;track.style.transform=`translateX(-${curSlide*cardW*perSlide()}px)`;dotsWrap.querySelectorAll('.testi-dot').forEach((d,i)=>d.classList.toggle('active',i===curSlide))}
+function resetAuto(){clearInterval(autoTimer);autoTimer=setInterval(()=>goSlide((curSlide+1)%totalSlides()),5200)}
+if(track){buildDots();resetAuto();window.addEventListener('resize',()=>{buildDots();goSlide(0)});
+let tx=0;track.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});track.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>45){goSlide(dx<0?curSlide+1:curSlide-1);resetAuto()}});track.addEventListener('mouseenter',()=>clearInterval(autoTimer));track.addEventListener('mouseleave',resetAuto)}
+
+/* ---- FAQ ---- */
+function faqToggle(btn){const item=btn.closest('.faq-item'),body=btn.nextElementSibling,wasOpen=item.classList.contains('open');document.querySelectorAll('.faq-item.open').forEach(i=>{i.classList.remove('open');i.querySelector('.faq-body').classList.remove('open')});if(!wasOpen){item.classList.add('open');body.classList.add('open')}}window.faqToggle=faqToggle;
+
+/* ---- Toast ---- */
+window.showToast=function(msg,type='info'){const wrap=document.getElementById('toasts'),t=document.createElement('div');t.className=`toast ${type}`;t.innerHTML=`<span class="toast-pip"></span><span>${msg}</span>`;wrap.appendChild(t);setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),320)},3000)};
+
+/* ---- Init ---- */
+loadCourses();
+setTimeout(()=>showToast('Welcome to Altivon Academy!','success'),1200);
+console.log('%c  Altivon Academy  %c  v2.0  ','background:#0B1F3A;color:#fff;padding:8px 14px;font-family:Georgia,serif;font-size:15px;border-radius:6px 0 0 6px;','background:#B8751A;color:#fff;padding:8px 14px;font-size:11px;font-weight:600;border-radius:0 6px 6px 0;');
+})();
+</script>
+</body>
+</html>
