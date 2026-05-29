@@ -1,0 +1,12 @@
+# wrangler.toml
+name = "academiq"
+main = "functions/api/[[route]].js"
+compatibility_date = "2026-05-29"
+
+[[d1_databases]]
+binding = "SITE_DB"
+database_name = "academiq-db"
+database_id = "299abfd9-5a1c-437e-ad19-66a9238350d3"
+
+[site]
+bucket = "./"
