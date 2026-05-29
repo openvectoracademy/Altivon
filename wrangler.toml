@@ -1,4 +1,3 @@
-# wrangler.toml
 name = "academiq"
 main = "functions/api/[[route]].js"
 compatibility_date = "2026-05-29"
