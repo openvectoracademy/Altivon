@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Altivon Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:#2C3E55;background:#FAFAF8;min-height:100vh;cursor:none}
+:root{--n1:#0B1F3A;--n2:#112D52;--g1:#B8751A;--g2:#CF8B28;--g3:#E8A840;--white:#FFFFFF;--off0:#FAFAF8;--t2:#2C3E55;--t3:#5A6B7E;--t4:#94A3B5;--b1:#E2E8EF;--b2:#CED6DF;--gold-bg:rgba(184,117,26,.07);--gold-edge:rgba(184,117,26,.22);--r1:8px;--r2:14px;--r3:20px;--r4:28px;--hh:72px;--max:1280px;--px:clamp(20px,5vw,80px);--s1:0 1px 4px rgba(11,31,58,.06);--s2:0 4px 16px rgba(11,31,58,.08);--s3:0 12px 40px rgba(11,31,58,.11);--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-bounce:cubic-bezier(0.34,1.56,0.64,1)}
+#cursor{position:fixed;width:12px;height:12px;background:var(--g1);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .25s,height .25s;will-change:left,top}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid rgba(184,117,26,.5);border-radius:50%;pointer-events:none;z-index:9997;transform:translate(-50%,-50%);transition:width .3s,height .3s;will-change:left,top}
+.cursor-expanded #cursor{width:18px;height:18px;background:var(--g2)}.cursor-expanded #cursor-ring{width:52px;height:52px;opacity:.6}
+@media(max-width:960px){#cursor,#cursor-ring{display:none}body{cursor:auto}}
+#header{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--hh);background:rgba(250,250,248,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);display:flex;align-items:center}
+.h-wrap{max-width:var(--max);margin:0 auto;padding:0 var(--px);width:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:36px;height:36px;border-radius:8px;background:var(--n1);overflow:hidden;box-shadow:0 4px 12px rgba(11,31,58,.2)}
+.logo-icon img{width:100%;height:100%;object-fit:contain;border-radius:8px}
+.logo-text{font-family:'Fraunces',serif;font-weight:700;font-size:1.15rem;color:var(--n1);letter-spacing:-.02em}
+.logo-text span{color:var(--g1)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;font-weight:600;text-decoration:none;border:none;cursor:none;transition:all .3s var(--ease-bounce);white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--t3);border:1px solid transparent}
+.btn-ghost:hover{background:rgba(11,31,58,.05);color:var(--n1)}
+.btn-navy{background:var(--n1);color:#fff}
+.btn-navy:hover{background:var(--n2)}
+.btn-gold{background:var(--g1);color:#fff}
+.btn-gold:hover{background:var(--g2)}
+.main{padding-top:calc(var(--hh) + 32px);padding-bottom:60px}
+.inner{max-width:var(--max);margin:0 auto;padding:0 var(--px)}
+.welcome-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:24px}
+.welcome-bar h1{font-family:'Fraunces',serif;font-weight:700;font-size:1.8rem;color:var(--n1);letter-spacing:-.02em}
+.banner{background:var(--gold-bg);border:1px solid var(--gold-edge);border-radius:var(--r2);padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.85rem;color:var(--g1);font-weight:500}
+.banner-close{background:none;border:none;cursor:none;color:var(--g1);font-size:1.2rem;padding:4px}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+.stat-card{background:var(--white);border:1px solid var(--b1);border-radius:var(--r3);padding:24px;text-align:center;box-shadow:var(--s1)}
+.stat-num{font-family:'Fraunces',serif;font-size:2.2rem;font-weight:700;color:var(--g1);line-height:1}
+.stat-label{font-size:.8rem;color:var(--t4);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;font-weight:600}
+.courses-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.course-card{background:var(--white);border:1px solid var(--b1);border-radius:var(--r3);overflow:hidden;transition:all .35s var(--ease-out);box-shadow:var(--s1)}
+.course-card:hover{transform:translateY(-6px);box-shadow:var(--s3)}
+.course-thumb{aspect-ratio:16/10;background:var(--n2);position:relative}
+.course-thumb img{width:100%;height:100%;object-fit:cover}
+.course-card-body{padding:20px}
+.course-card-body h3{font-family:'Fraunces',serif;font-weight:600;font-size:1.1rem;color:var(--n1);margin-bottom:4px}
+.course-card-body .subject{font-size:.78rem;color:var(--t4);margin-bottom:12px}
+.expiry{display:inline-block;padding:4px 11px;border-radius:20px;font-size:.74rem;font-weight:600}
+.expiry.green{background:#F0FDF4;color:#16A34A}.expiry.orange{background:#FFFBEB;color:#D97706}.expiry.red{background:#FEF2F2;color:#DC2626}
+.course-card-footer{padding:14px 20px;border-top:1px solid var(--b1);display:flex;justify-content:space-between;align-items:center}
+.empty-state{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t4)}
+.empty-state svg{width:64px;height:64px;stroke:var(--t5);fill:none;stroke-width:1.5;margin-bottom:16px}
+.skeleton{background:linear-gradient(90deg,var(--b1)25%,var(--b2)50%,var(--b1)75%);background-size:300% 100%;animation:skel 1.6s infinite;border-radius:4px}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+#toasts{position:fixed;bottom:28px;right:28px;z-index:9000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:12px;padding:14px 20px;border-radius:var(--r2);background:var(--white);border:1px solid var(--b1);box-shadow:0 12px 40px rgba(11,31,58,.15);font-size:.84rem;font-weight:500;color:var(--n1);pointer-events:auto;animation:toastIn .4s var(--ease-bounce)}
+.toast.out{animation:toastOut .3s forwards}
+.toast-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.toast.success .toast-pip{background:#16A34A}.toast.error .toast-pip{background:#DC2626}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(20px)}}
+@media(max-width:960px){.courses-grid{grid-template-columns:1fr 1fr}.stats-row{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.courses-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-ring"></div>
+
+<header id="header">
+  <div class="h-wrap">
+    <a class="logo" href="/index.html"><div class="logo-icon"><img src="images/site.png" alt="Altivon"></div><span class="logo-text">Altivon <span>Academy</span></span></a>
+    <div style="display:flex;align-items:center;gap:12px">
+      <a href="/inbox.html" class="btn btn-ghost">Inbox</a>
+      <button class="btn btn-ghost" onclick="handleLogout()">Sign Out</button>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+  <div class="inner">
+    <div class="welcome-bar"><h1>Welcome, <span id="userName">Student</span></h1><a href="/explore.html" class="btn btn-gold">Browse Courses</a></div>
+    <div class="banner" id="banner" style="display:none"><span id="bannerText"></span><button class="banner-close" onclick="this.parentElement.style.display='none'">&times;</button></div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num" id="statEnrolled">—</div><div class="stat-label">Enrolled Courses</div></div>
+      <div class="stat-card"><div class="stat-num" id="statActive">—</div><div class="stat-label">Active Memberships</div></div>
+      <div class="stat-card"><div class="stat-num" id="statExpiring">—</div><div class="stat-label">Expiring Soon</div></div>
+    </div>
+    <div class="courses-grid" id="coursesGrid"><div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--t4)">Loading your courses...</div></div>
+  </div>
+</div>
+<div id="toasts"></div>
+
+<script>
+(function(){
+'use strict';
+const token=localStorage.getItem('token');const user=JSON.parse(localStorage.getItem('user')||'null');
+if(!token||!user){window.location.href='/auth.html'}
+
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function track(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;if(cur){cur.style.left=mx+'px';cur.style.top=my+'px'}if(ring){ring.style.left=rx+'px';ring.style.top=ry+'px'}requestAnimationFrame(track)})();
+document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn,.course-card,.banner-close'))document.body.classList.add('cursor-expanded')});
+document.addEventListener('mouseout',e=>{if(e.target.closest('a,button,.btn,.course-card,.banner-close'))document.body.classList.remove('cursor-expanded')});
+
+document.getElementById('userName').textContent=user.name||'Student';
+
+function daysUntil(date){const now=new Date();const exp=new Date(date);return Math.ceil((exp-now)/(1000*60*60*24))}
+function getExpiryClass(days){if(days>30)return'green';if(days>0)return'orange';return'red'}
+
+async function loadDashboard(){
+try{
+const [profileR,membershipsR,notifR]=await Promise.all([
+fetch('/api/user/profile',{headers:{'Authorization':'Bearer '+token}}),
+fetch('/api/user/memberships',{headers:{'Authorization':'Bearer '+token}}),
+fetch('/api/user/notifications',{headers:{'Authorization':'Bearer '+token}})
+]);
+const memberships=(await membershipsR.json())||[];
+const notifications=(await notifR.json())||[];
+const bannerNotif=notifications.find(n=>n.is_banner);
+if(bannerNotif){document.getElementById('banner').style.display='flex';document.getElementById('bannerText').textContent=bannerNotif.message||bannerNotif.title}
+
+const active=memberships.filter(m=>m.is_active);const expiringSoon=active.filter(m=>{const d=daysUntil(m.expires_at);return d<=30&&d>0});
+document.getElementById('statEnrolled').textContent=memberships.length;
+document.getElementById('statActive').textContent=active.length;
+document.getElementById('statExpiring').textContent=expiringSoon.length;
+
+const grid=document.getElementById('coursesGrid');
+if(!memberships.length){grid.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg><p>No courses yet.</p><a href="/explore.html" class="btn btn-gold" style="margin-top:16px">Browse Courses</a></div>';return}
+grid.innerHTML=memberships.map(m=>{const days=daysUntil(m.expires_at);const expClass=getExpiryClass(days);const thumbSvg=`data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300"><rect fill="#${['0B1F3A','112D52','163A6A'][Math.floor(Math.random()*3)]}" width="480" height="300"/><circle cx="120" cy="120" r="60" fill="none" stroke="#B8751A" stroke-width="1" opacity="0.3"/></svg>`)}`;
+return`<div class="course-card"><div class="course-thumb"><img src="${thumbSvg}" alt="${m.course_title}"></div><div class="course-card-body"><h3>${m.course_title}</h3><div class="subject">${m.subject_area||'Course'}</div><span class="expiry ${expClass}">${days>0?days+' days remaining':'Expired'}</span></div><div class="course-card-footer"><span style="font-size:.78rem;color:var(--t4)">${m.is_active?'Active':'Pending'}</span><a href="/learn.html?course=${m.course_id}" class="btn btn-navy" style="padding:7px 16px;font-size:.78rem">Continue</a></div></div>`}).join('')}catch(e){
+document.getElementById('coursesGrid').innerHTML='<div class="empty-state"><p>Failed to load dashboard. Please try again.</p></div>'}}
+
+async function handleLogout(){
+try{await fetch('/api/auth/logout',{method:'POST',headers:{'Authorization':'Bearer '+token}})}catch(e){}
+localStorage.removeItem('token');localStorage.removeItem('user');window.location.href='/index.html'}
+window.handleLogout=handleLogout;
+loadDashboard();
+})();
+</script>
+</body>
+</html>
