@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Altivon Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;font-size:16px}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:#2C3E55;background:#F1F5F9;min-height:100vh;display:flex;cursor:none}
+:root{--n1:#0B1F3A;--n2:#112D52;--g1:#B8751A;--g2:#CF8B28;--white:#FFFFFF;--off0:#FAFAF8;--t2:#2C3E55;--t3:#5A6B7E;--t4:#94A3B5;--b1:#E2E8EF;--r1:8px;--r2:12px;--r3:16px;--s1:0 1px 3px rgba(0,0,0,.06);--s2:0 4px 16px rgba(0,0,0,.08);--ease-out:cubic-bezier(0.16,1,0.3,1)}
+#cursor{position:fixed;width:12px;height:12px;background:var(--g1);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);will-change:left,top}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid rgba(184,117,26,.5);border-radius:50%;pointer-events:none;z-index:9997;transform:translate(-50%,-50%);will-change:left,top}
+.cursor-expanded #cursor{width:18px;height:18px;background:var(--g2)}.cursor-expanded #cursor-ring{width:52px;height:52px;opacity:.6}
+@media(max-width:960px){#cursor,#cursor-ring{display:none}body{cursor:auto}}
+#sidebar{width:260px;min-width:260px;background:var(--n1);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.side-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+.side-logo span{font-family:'Fraunces',serif;font-weight:700;font-size:1.1rem;color:#fff;letter-spacing:-.02em}
+.side-logo span em{color:var(--g2);font-style:normal}
+.side-nav{padding:12px;flex:1}
+.side-section{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.3);padding:16px 12px 8px}
+.side-link{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--r1);color:rgba(255,255,255,.6);text-decoration:none;font-size:.85rem;font-weight:500;transition:all .2s;cursor:none;border:none;background:none;width:100%;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:2px}
+.side-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.side-link.active{background:var(--g1);color:#fff}
+.side-link svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+.side-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:.75rem;color:rgba(255,255,255,.3)}
+.side-footer button{background:none;border:none;color:rgba(255,255,255,.5);cursor:none;font-size:.78rem;margin-top:8px;display:block}
+.side-footer button:hover{color:#fff}
+#main{flex:1;margin-left:260px;padding:24px;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.topbar h2{font-family:'Fraunces',serif;font-weight:700;font-size:1.6rem;color:var(--n1)}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.badge-green{background:#DCFCE7;color:#16A34A}.badge-red{background:#FEE2E2;color:#DC2626}.badge-orange{background:#FEF3C7;color:#D97706}.badge-blue{background:#DBEAFE;color:#2563EB}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-box{background:var(--white);border-radius:var(--r3);padding:20px;box-shadow:var(--s1)}
+.stat-box .num{font-family:'Fraunces',serif;font-size:2rem;font-weight:700;color:var(--n1)}
+.stat-box .label{font-size:.75rem;color:var(--t4);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.panel{display:none}.panel.active{display:block}
+.table-wrap{overflow-x:auto;background:var(--white);border-radius:var(--r3);box-shadow:var(--s1)}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+th{text-align:left;padding:12px 16px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--t4);border-bottom:1px solid var(--b1);background:var(--off0)}
+td{padding:11px 16px;border-bottom:1px solid var(--b1);color:var(--t2)}
+tr:hover td{background:#F8FAFC}
+.btn-sm{display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:var(--r1);font-size:.74rem;font-weight:600;border:none;cursor:none;transition:all .2s;text-decoration:none;font-family:'Plus Jakarta Sans',sans-serif;margin:1px}
+.btn-sm:hover{transform:translateY(-1px)}
+.btn-sm-gold{background:var(--g1);color:#fff}.btn-sm-gold:hover{background:var(--g2)}
+.btn-sm-navy{background:var(--n1);color:#fff}.btn-sm-navy:hover{background:var(--n2)}
+.btn-sm-red{background:#DC2626;color:#fff}.btn-sm-red:hover{background:#B91C1C}
+.btn-sm-green{background:#16A34A;color:#fff}.btn-sm-green:hover{background:#15803D}
+.btn-sm-outline{background:transparent;border:1px solid var(--b1);color:var(--t2)}.btn-sm-outline:hover{background:var(--off0)}
+.modal-overlay{position:fixed;inset:0;background:rgba(11,31,58,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.active{opacity:1;pointer-events:auto}
+.modal{background:var(--white);border-radius:var(--r3);padding:28px;max-width:520px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.2)}
+.modal h3{font-family:'Fraunces',serif;font-size:1.3rem;color:var(--n1);margin-bottom:16px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:.75rem;font-weight:600;color:var(--t2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;border:1.5px solid var(--b1);border-radius:var(--r1);font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;color:var(--t2);outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--g1)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+#toasts{position:fixed;bottom:28px;right:28px;z-index:9000;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{padding:14px 20px;border-radius:var(--r1);color:#fff;font-size:.84rem;font-weight:500;pointer-events:auto;animation:toastIn .4s;box-shadow:0 8px 32px rgba(0,0,0,.2)}
+.toast.out{animation:toastOut .3s forwards}.toast-success{background:#16A34A}.toast-error{background:#DC2626}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+@keyframes toastOut{to{opacity:0;transform:translateX(20px)}}
+@media(max-width:900px){#sidebar{width:220px;min-width:220px}#main{margin-left:220px}}
+@media(max-width:700px){#sidebar{display:none}#main{margin-left:0}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-ring"></div>
+
+<div id="sidebar">
+  <div class="side-logo"><span>Altivon <em>Admin</em></span></div>
+  <nav class="side-nav">
+    <div class="side-section">Overview</div>
+    <button class="side-link active" onclick="switchView('dashboard')"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>Dashboard</button>
+    <div class="side-section">Content</div>
+    <button class="side-link" onclick="switchView('courses')"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Courses</button>
+    <button class="side-link" onclick="switchView('content-tree')"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Content Tree</button>
+    <button class="side-link" onclick="switchView('lectures')"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>Lectures</button>
+    <button class="side-link" onclick="switchView('resources')"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>Resources</button>
+    <div class="side-section">Management</div>
+    <button class="side-link" onclick="switchView('users')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Users</button>
+    <button class="side-link" onclick="switchView('memberships')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Memberships</button>
+    <div class="side-section">Communication</div>
+    <button class="side-link" onclick="switchView('notifications')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications</button>
+    <button class="side-link" onclick="switchView('tickets')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Support Tickets</button>
+  </nav>
+  <div class="side-footer">admin@academiq.edu<button onclick="handleLogout()">Sign Out</button></div>
+</div>
+
+<div id="main">
+  <div class="topbar"><h2 id="viewTitle">Dashboard</h2></div>
+  
+  <div class="panel active" id="panel-dashboard">
+    <div class="stats-grid" id="dashStats"></div>
+  </div>
+
+  <div class="panel" id="panel-users"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Device</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="usersTable"></tbody></table></div></div>
+
+  <div class="panel" id="panel-courses">
+    <button class="btn-sm btn-sm-gold" style="margin-bottom:12px" onclick="openCourseModal()">+ New Course</button>
+    <div class="table-wrap"><table><thead><tr><th>Title</th><th>Area</th><th>Difficulty</th><th>Browse</th><th>Status</th><th>Actions</th></tr></thead><tbody id="coursesTable"></tbody></table></div>
+  </div>
+
+  <div class="panel" id="panel-content-tree">
+    <select id="treeCourseSelect" onchange="loadContentTree()" style="padding:8px 12px;border:1.5px solid var(--b1);border-radius:var(--r1);margin-bottom:16px;font-family:'Plus Jakarta Sans',sans-serif"><option>Select course...</option></select>
+    <div id="contentTree"></div>
+  </div>
+
+  <div class="panel" id="panel-lectures">
+    <select id="lecCourseFilter" onchange="loadLectures()" style="padding:8px 12px;border:1.5px solid var(--b1);border-radius:var(--r1);margin-bottom:16px;font-family:'Plus Jakarta Sans',sans-serif"><option value="">All courses</option></select>
+    <div class="table-wrap"><table><thead><tr><th>Title</th><th>Course</th><th>Chapter</th><th>Video ID</th><th>Actions</th></tr></thead><tbody id="lecturesTable"></tbody></table></div>
+  </div>
+
+  <div class="panel" id="panel-resources">
+    <select id="resCourseSelect" onchange="loadResources()" style="padding:8px 12px;border:1.5px solid var(--b1);border-radius:var(--r1);margin-bottom:16px;font-family:'Plus Jakarta Sans',sans-serif"><option>Select course...</option></select>
+    <button class="btn-sm btn-sm-gold" style="margin-left:8px" onclick="openResourceModal()">+ Add Resource</button>
+    <div id="resourcesList" style="margin-top:16px"></div>
+  </div>
+
+  <div class="panel" id="panel-memberships"><div class="table-wrap"><table><thead><tr><th>User</th><th>Course</th><th>Status</th><th>Expires</th><th>Payment</th><th>Actions</th></tr></thead><tbody id="membershipsTable"></tbody></table></div></div>
+
+  <div class="panel" id="panel-notifications">
+    <button class="btn-sm btn-sm-gold" style="margin-bottom:12px" onclick="openNotifModal()">+ Create</button>
+    <div class="table-wrap"><table><thead><tr><th>Title</th><th>Type</th><th>Target</th><th>Active</th><th>Actions</th></tr></thead><tbody id="notificationsTable"></tbody></table></div>
+  </div>
+
+  <div class="panel" id="panel-tickets"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="ticketsTable"></tbody></table></div></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalContent"></div></div>
+<div id="toasts"></div>
+
+<script>
+(function(){
+'use strict';
+const token=localStorage.getItem('token');if(!token){window.location.href='/auth.html'}
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function track(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;if(cur){cur.style.left=mx+'px';cur.style.top=my+'px'}if(ring){ring.style.left=rx+'px';ring.style.top=ry+'px'}requestAnimationFrame(track)})();
+document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn-sm,.side-link,tr,td,input,select'))document.body.classList.add('cursor-expanded')});
+document.addEventListener('mouseout',e=>{if(e.target.closest('a,button,.btn-sm,.side-link,tr,td,input,select'))document.body.classList.remove('cursor-expanded')});
+
+function showToast(msg,type='success'){const w=document.getElementById('toasts'),t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;w.appendChild(t);setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),300)},2500)}
+function openModal(html){document.getElementById('modalContent').innerHTML=html;document.getElementById('modalOverlay').classList.add('active')}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('active')}
+document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal()});
+
+function switchView(view){
+document.querySelectorAll('.side-link').forEach(l=>l.classList.remove('active'));
+document.querySelector(`.side-link[onclick*="${view}"]`)?.classList.add('active');
+document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+document.getElementById('panel-'+view)?.classList.add('active');
+document.getElementById('viewTitle').textContent=view.replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase());
+if(view==='dashboard')loadDashboard();if(view==='users')loadUsers();if(view==='courses'){loadCourses();loadCourseSelects()}
+if(view==='content-tree')loadCourseSelects();if(view==='lectures'){loadLectures();loadCourseSelects()}
+if(view==='resources')loadCourseSelects();if(view==='memberships')loadMemberships();
+if(view==='notifications')loadNotifications();if(view==='tickets')loadTickets()}
+window.switchView=switchView;
+
+async function api(url,options={}){const r=await fetch(url,{...options,headers:{...options.headers,'Authorization':'Bearer '+token,'Content-Type':'application/json'}});if(r.status===401||r.status===403){localStorage.clear();window.location.href='/auth.html'}return r}
+
+async function loadDashboard(){try{const r=await api('/api/admin/stats');const d=await r.json();document.getElementById('dashStats').innerHTML=`
+<div class="stat-box"><div class="num">${d.courses||0}</div><div class="label">Courses</div></div>
+<div class="stat-box"><div class="num">${d.subjects||0}</div><div class="label">Subjects</div></div>
+<div class="stat-box"><div class="num">${d.users||0}</div><div class="label">Users</div></div>
+<div class="stat-box"><div class="num">${d.pendingApproval||0}</div><div class="label">Pending Approval</div></div>
+<div class="stat-box"><div class="num">${d.activeMembers||0}</div><div class="label">Active Members</div></div>
+<div class="stat-box"><div class="num">${d.pendingPayments||0}</div><div class="label">Pending Payments</div></div>
+<div class="stat-box"><div class="num">${d.openTickets||0}</div><div class="label">Open Tickets</div></div>
+<div class="stat-box"><div class="num">${d.chapters||0}</div><div class="label">Chapters</div></div>`}catch(e){}}
+
+async function loadUsers(){try{const r=await api('/api/admin/users');const users=await r.json();document.getElementById('usersTable').innerHTML=users.map(u=>`<tr><td>${u.name}</td><td>${u.email}</td><td>${u.role}</td><td><span class="badge ${u.is_approved?'badge-green':'badge-orange'}">${u.is_approved?'Approved':'Pending'}</span>${u.is_blocked?' <span class="badge badge-red">Blocked</span>':''}</td><td>${u.device_fingerprint?'<span class="badge badge-blue">Locked</span>':'Free'}</td><td>${new Date(u.created_at).toLocaleDateString()}</td><td>${!u.is_approved?`<button class="btn-sm btn-sm-green" onclick="approveUser(${u.id})">Approve</button>`:''}<button class="btn-sm btn-sm-outline" onclick="toggleBlock(${u.id})">${u.is_blocked?'Unblock':'Block'}</button>${u.device_fingerprint?`<button class="btn-sm btn-sm-outline" onclick="clearDevice(${u.id})">Clear Device</button>`:''}<button class="btn-sm btn-sm-red" onclick="deleteUser(${u.id})">Delete</button></td></tr>`).join('')}catch(e){}}
+
+async function approveUser(id){await api(`/api/admin/users/${id}/approve`,{method:'PUT'});showToast('User approved');loadUsers()}
+async function toggleBlock(id){await api(`/api/admin/users/${id}/block`,{method:'PUT'});showToast('Toggled block');loadUsers()}
+async function clearDevice(id){await api(`/api/admin/users/${id}/clear-device`,{method:'PUT'});showToast('Device cleared');loadUsers()}
+async function deleteUser(id){if(!confirm('Delete this user and all their data?'))return;await api(`/api/admin/users/${id}`,{method:'DELETE'});showToast('User deleted');loadUsers()}
+window.approveUser=approveUser;window.toggleBlock=toggleBlock;window.clearDevice=clearDevice;window.deleteUser=deleteUser;
+
+async function loadCourses(){try{const r=await api('/api/admin/courses');const courses=await r.json();document.getElementById('coursesTable').innerHTML=courses.map(c=>`<tr><td>${c.title}</td><td>${c.subject_area||'-'}</td><td>${c.difficulty_level||'-'}</td><td>${c.show_in_browse?'Yes':'No'}</td><td>${c.is_active?'<span class="badge badge-green">Active</span>':'<span class="badge badge-red">Inactive</span>'}</td><td><button class="btn-sm btn-sm-outline" onclick="editCourse(${c.id})">Edit</button><button class="btn-sm btn-sm-red" onclick="deleteCourse(${c.id})">Delete</button></td></tr>`).join('')}catch(e){}}
+
+async function loadCourseSelects(){try{const r=await api('/api/admin/courses');const courses=await r.json();const opts=courses.map(c=>`<option value="${c.id}">${c.title}</option>`).join('');
+['treeCourseSelect','lecCourseFilter','resCourseSelect'].forEach(id=>{const el=document.getElementById(id);if(el){el.innerHTML='<option value="">Select course...</option>'+opts}})}catch(e){}}
+
+function openCourseModal(course=null){
+openModal(`<h3>${course?'Edit':'New'} Course</h3>
+<div class="form-group"><label>Title</label><input id="mCourseTitle" value="${course?.title||''}"></div>
+<div class="form-group"><label>Description</label><textarea id="mCourseDesc">${course?.description||''}</textarea></div>
+<div class="form-group"><label>Subject Area</label><input id="mCourseArea" value="${course?.subject_area||''}"></div>
+<div class="form-group"><label>Difficulty</label><select id="mCourseDiff"><option value="Beginner"${course?.difficulty_level==='Beginner'?' selected':''}>Beginner</option><option value="Intermediate"${course?.difficulty_level==='Intermediate'?' selected':''}>Intermediate</option><option value="Advanced"${course?.difficulty_level==='Advanced'?' selected':''}>Advanced</option></select></div>
+<div class="form-group"><label><input type="checkbox" id="mCourseBrowse"${course?.show_in_browse?' checked':''}> Show in Browse</label></div>
+<div class="modal-actions"><button class="btn-sm btn-sm-outline" onclick="closeModal()">Cancel</button><button class="btn-sm btn-sm-gold" onclick="saveCourse(${course?.id||0})">Save</button></div>`)}
+async function saveCourse(id){
+const data={title:document.getElementById('mCourseTitle').value,description:document.getElementById('mCourseDesc').value,subject_area:document.getElementById('mCourseArea').value,difficulty_level:document.getElementById('mCourseDiff').value,show_in_browse:document.getElementById('mCourseBrowse').checked};
+if(id){await api(`/api/admin/courses/${id}`,{method:'PUT',body:JSON.stringify(data)})}else{await api('/api/admin/courses',{method:'POST',body:JSON.stringify(data)})}
+closeModal();showToast('Course saved');loadCourses();loadCourseSelects()}
+async function editCourse(id){const r=await api('/api/admin/courses');const courses=await r.json();const c=courses.find(x=>x.id===id);if(c)openCourseModal(c)}
+async function deleteCourse(id){if(!confirm('Delete this course and ALL its content?'))return;await api(`/api/admin/courses/${id}`,{method:'DELETE'});showToast('Course deleted');loadCourses()}
+window.openCourseModal=openCourseModal;window.editCourse=editCourse;window.deleteCourse=deleteCourse;window.saveCourse=saveCourse;
+
+async function loadContentTree(){const courseId=document.getElementById('treeCourseSelect').value;if(!courseId){document.getElementById('contentTree').innerHTML='';return}
+try{const r=await api(`/api/courses/${courseId}`);const c=await r.json();
+let html=`<h4 style="font-family:'Fraunces',serif;color:var(--n1);margin-bottom:12px">${c.title}</h4>`;
+(c.subjects||[]).forEach(s=>{html+=`<div style="margin-bottom:8px;padding:8px;background:var(--white);border-radius:var(--r1);border:1px solid var(--b1)"><strong>${s.name}</strong> <button class="btn-sm btn-sm-gold" onclick="addChild('subject','paper',${s.id})">+ Paper</button>`;
+(s.papers||[]).forEach(p=>{html+=`<div style="margin:4px 0 4px 20px;padding:6px;background:var(--off0);border-radius:var(--r1)">${p.name} <button class="btn-sm btn-sm-outline" onclick="addChild('paper','chapter',${p.id})">+ Chapter</button>`;
+(p.chapters||[]).forEach(ch=>{html+=`<div style="margin:4px 0 4px 20px;font-size:.82rem;color:var(--t3)">${ch.title} <button class="btn-sm btn-sm-outline" onclick="addChild('chapter','lecture',${ch.id},${courseId})">+ Lecture</button> (${(ch.lectures||[]).length} lectures)</div>`});
+html+='</div>'});
+html+='</div>'});
+document.getElementById('contentTree').innerHTML=html}catch(e){}}
+
+function addChild(parentType,childType,parentId,courseId=null){
+const labels={subject:'Subject Name',paper:'Paper Name',chapter:'Chapter Title',lecture:'Lecture Title'};
+const name=prompt(labels[childType]);if(!name)return;
+if(childType==='lecture'){const vid=prompt('YouTube Video ID:');if(!vid)return;
+api('/api/admin/lectures',{method:'POST',body:JSON.stringify({chapter_id:parentId,course_id:courseId,title:name,yt_video_id:vid})}).then(()=>{showToast('Lecture added');loadContentTree()})}
+else{const ep={subject:'/api/admin/subjects',paper:'/api/admin/papers',chapter:'/api/admin/chapters'};
+const body={subject:{course_id:parentId,name},paper:{subject_id:parentId,name},chapter:{paper_id:parentId,title:name}};
+api(ep[childType],{method:'POST',body:JSON.stringify(body[childType])}).then(()=>{showToast('Added');loadContentTree()})}}
+window.addChild=addChild;
+
+async function loadLectures(){try{const courseId=document.getElementById('lecCourseFilter').value;let url='/api/admin/all-lectures';const r=await api(url);const lectures=await r.json();const filtered=courseId?lectures.filter(l=>l.course_id===parseInt(courseId)):lectures;
+document.getElementById('lecturesTable').innerHTML=filtered.map(l=>`<tr><td>${l.title}</td><td>${l.course_title}</td><td>${l.chapter_title}</td><td>${l.yt_video_id}</td><td><button class="btn-sm btn-sm-outline" onclick="openPdfModal(${l.id})">PDFs</button><button class="btn-sm btn-sm-red" onclick="deleteLecture(${l.id})">Delete</button></td></tr>`).join('')}catch(e){}}
+async function deleteLecture(id){if(!confirm('Delete lecture?'))return;await api(`/api/admin/lectures/${id}`,{method:'DELETE'});showToast('Deleted');loadLectures()}
+function openPdfModal(lectureId){openModal(`<h3>Manage PDFs</h3><div id="pdfList">Loading...</div><div class="form-group"><label>PDF Title</label><input id="pdfTitle"></div><div class="form-group"><label>PDF URL</label><input id="pdfUrl"></div><div class="modal-actions"><button class="btn-sm btn-sm-outline" onclick="closeModal()">Close</button><button class="btn-sm btn-sm-gold" onclick="addPdf(${lectureId})">Add PDF</button></div>`);loadPdfs(lectureId)}
+async function loadPdfs(lectureId){try{const r=await api(`/api/user/lecture/${lectureId}`);const l=await r.json();document.getElementById('pdfList').innerHTML=(l.pdfs||[]).map((p,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px;margin:2px 0;background:var(--off0);border-radius:var(--r1)"><span>${p.title}</span><button class="btn-sm btn-sm-red" onclick="deletePdf(${lectureId},${i})">Remove</button></div>`).join('')||'No PDFs'}catch(e){}}
+async function addPdf(lectureId){const title=document.getElementById('pdfTitle').value;const url=document.getElementById('pdfUrl').value;if(!title||!url)return;await api('/api/admin/lecture-pdfs',{method:'POST',body:JSON.stringify({lecture_id:lectureId,title,url})});loadPdfs(lectureId);showToast('PDF added')}
+async function deletePdf(lectureId,index){await api(`/api/admin/lecture-pdfs/${lectureId}`,{method:'DELETE',body:JSON.stringify({lecture_id:lectureId,index})});loadPdfs(lectureId);showToast('PDF removed')}
+window.openPdfModal=openPdfModal;window.addPdf=addPdf;window.deletePdf=deletePdf;window.deleteLecture=deleteLecture;
+
+async function loadResources(){const courseId=document.getElementById('resCourseSelect').value;if(!courseId)return;try{const r=await api(`/api/admin/resources/course/${courseId}`);const resources=await r.json();document.getElementById('resourcesList').innerHTML=resources.map((r,i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;margin:4px 0;background:var(--white);border-radius:var(--r1);border:1px solid var(--b1)"><span><strong>${r.title}</strong> — ${r.url}</span><button class="btn-sm btn-sm-red" onclick="deleteResource(${courseId},${i})">Remove</button></div>`).join('')||'No resources'}catch(e){}}
+function openResourceModal(){const courseId=document.getElementById('resCourseSelect').value;if(!courseId){showToast('Select a course first','error');return}
+openModal(`<h3>Add Resource</h3><div class="form-group"><label>Title</label><input id="resTitle"></div><div class="form-group"><label>URL</label><input id="resUrl"></div><div class="modal-actions"><button class="btn-sm btn-sm-outline" onclick="closeModal()">Cancel</button><button class="btn-sm btn-sm-gold" onclick="addResource(${courseId})">Add</button></div>`)}
+async function addResource(courseId){const title=document.getElementById('resTitle').value;const url=document.getElementById('resUrl').value;if(!title||!url)return;await api('/api/admin/resources',{method:'POST',body:JSON.stringify({course_id:courseId,title,url})});closeModal();loadResources();showToast('Resource added')}
+async function deleteResource(courseId,index){await api(`/api/admin/resources/${courseId}`,{method:'DELETE',body:JSON.stringify({course_id:courseId,index})});loadResources();showToast('Resource removed')}
+window.openResourceModal=openResourceModal;window.addResource=addResource;window.deleteResource=deleteResource;
+
+async function loadMemberships(){try{const r=await api('/api/admin/memberships');const m=await r.json();document.getElementById('membershipsTable').innerHTML=m.map(x=>`<tr><td>${x.user_name}</td><td>${x.course_title}</td><td><span class="badge ${x.is_active?'badge-green':x.payment_status==='pending'?'badge-orange':'badge-red'}">${x.is_active?'Active':x.payment_status}</span></td><td>${x.expires_at?new Date(x.expires_at).toLocaleDateString():'-'}</td><td>${x.payment_trx_id||'-'} (${x.payment_method||'-'})</td><td>${x.payment_status==='pending'?`<button class="btn-sm btn-sm-green" onclick="verifyPayment(${x.id})">Verify</button><button class="btn-sm btn-sm-red" onclick="rejectPayment(${x.id})">Reject</button>`:''}<button class="btn-sm btn-sm-outline" onclick="extendMembership(${x.id})">Extend</button><button class="btn-sm btn-sm-red" onclick="cancelMembership(${x.id})">Cancel</button></td></tr>`).join('')}catch(e){}}
+async function verifyPayment(id){await api(`/api/admin/memberships/${id}/verify-payment`,{method:'PUT'});showToast('Payment verified');loadMemberships()}
+async function rejectPayment(id){await api(`/api/admin/memberships/${id}/reject-payment`,{method:'PUT'});showToast('Payment rejected');loadMemberships()}
+async function extendMembership(id){const days=prompt('Extend by how many days?','30');if(!days)return;await api(`/api/admin/memberships/${id}/extend`,{method:'PUT',body:JSON.stringify({days:parseInt(days)})});showToast('Extended');loadMemberships()}
+async function cancelMembership(id){if(!confirm('Cancel this membership?'))return;await api(`/api/admin/memberships/${id}/cancel`,{method:'PUT'});showToast('Cancelled');loadMemberships()}
+window.verifyPayment=verifyPayment;window.rejectPayment=rejectPayment;window.extendMembership=extendMembership;window.cancelMembership=cancelMembership;
+
+async function loadNotifications(){try{const r=await api('/api/admin/notifications');const n=await r.json();document.getElementById('notificationsTable').innerHTML=n.map(x=>`<tr><td>${x.title}</td><td><span class="badge badge-blue">${x.type}</span></td><td>${x.target_type}${x.target_id?' #'+x.target_id:''}</td><td>${x.is_active?'<span class="badge badge-green">Yes</span>':'<span class="badge badge-red">No</span>'}</td><td><button class="btn-sm btn-sm-outline" onclick="editNotif(${x.id})">Edit</button><button class="btn-sm btn-sm-red" onclick="deleteNotif(${x.id})">Delete</button></td></tr>`).join('')}catch(e){}}
+function openNotifModal(){openModal(`<h3>Create Notification</h3><div class="form-group"><label>Title</label><input id="nTitle"></div><div class="form-group"><label>Message</label><textarea id="nMsg"></textarea></div><div class="form-group"><label>Type</label><select id="nType"><option>info</option><option>warning</option><option>success</option><option>important</option></select></div><div class="form-group"><label><input type="checkbox" id="nBanner"> Banner notification</label></div><div class="modal-actions"><button class="btn-sm btn-sm-outline" onclick="closeModal()">Cancel</button><button class="btn-sm btn-sm-gold" onclick="createNotif()">Create</button></div>`)}
+async function createNotif(){const data={title:document.getElementById('nTitle').value,message:document.getElementById('nMsg').value,type:document.getElementById('nType').value,is_banner:document.getElementById('nBanner').checked};await api('/api/admin/notifications',{method:'POST',body:JSON.stringify(data)});closeModal();loadNotifications();showToast('Created')}
+async function deleteNotif(id){await api(`/api/admin/notifications/${id}`,{method:'DELETE'});loadNotifications();showToast('Deleted')}
+window.openNotifModal=openNotifModal;window.createNotif=createNotif;window.deleteNotif=deleteNotif;
+
+async function loadTickets(){try{const r=await api('/api/admin/support-tickets');const t=await r.json();document.getElementById('ticketsTable').innerHTML=t.map(x=>`<tr><td>${x.name}</td><td>${x.email}</td><td>${x.subject||'-'}</td><td><span class="badge ${x.status==='open'?'badge-orange':'badge-green'}">${x.status}</span></td><td>${new Date(x.created_at).toLocaleDateString()}</td><td><button class="btn-sm btn-sm-outline" onclick="viewTicket('${x.message.replace(/'/g,"&#39;")}')">View</button>${x.status==='open'?`<button class="btn-sm btn-sm-green" onclick="resolveTicket(${x.id})">Resolve</button>`:''}</td></tr>`).join('')}catch(e){}}
+function viewTicket(msg){alert('Message:\n\n'+msg)}
+async function resolveTicket(id){await api(`/api/admin/support-tickets/${id}/resolve`,{method:'PUT'});loadTickets();showToast('Resolved')}
+window.viewTicket=viewTicket;window.resolveTicket=resolveTicket;
+
+function handleLogout(){localStorage.clear();window.location.href='/index.html'}window.handleLogout=handleLogout;
+loadDashboard();
+})();
+</script>
+</body>
+</html>
