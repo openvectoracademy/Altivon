@@ -60,6 +60,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:#2C3E55;background:linear-
 .back-link{text-align:center;margin-top:16px}
 .back-link a{font-size:.84rem;color:var(--t4);text-decoration:none;transition:color .25s}
 .back-link a:hover{color:var(--g1)}
+.demo-badge{display:inline-block;padding:4px 10px;background:var(--gold-bg);border:1px solid var(--gold-edge);border-radius:20px;font-size:.68rem;font-weight:600;color:var(--g1);margin-bottom:12px;letter-spacing:.04em}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -72,6 +73,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:#2C3E55;background:linear-
       <div class="logo-icon"><img src="images/site.png" alt="Altivon Academy"></div>
       <span class="logo-text">Altivon <span>Academy</span></span>
     </a>
+    <div class="demo-badge" id="demoBadge" style="display:none">Demo Mode — Local Preview</div>
   </div>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
@@ -91,14 +93,15 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:#2C3E55;background:linear-
       <div class="pending-notice" id="pendingNotice">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         <h4>Account Created!</h4>
-        <p>Your account is pending admin approval. You'll be able to sign in once approved — usually within a few hours.</p>
+        <p>Your account is pending admin approval. You'll be able to sign in once approved.</p>
+        <button class="btn btn-gold" style="margin-top:16px;width:auto;display:inline-flex" onclick="switchTab('login');document.getElementById('pendingNotice').style.display='none';document.getElementById('signupForm').style.display='block'">Back to Sign In</button>
       </div>
       <form id="signupForm" onsubmit="handleSignup(event)">
         <div class="form-group"><label>Full Name</label><input type="text" id="signupName" placeholder="Your full name" required><span class="field-error" id="signupNameError"></span></div>
         <div class="form-group"><label>Email</label><input type="email" id="signupEmail" placeholder="your@email.com" required><span class="field-error" id="signupEmailError"></span></div>
         <div class="form-row">
           <div class="form-group"><label>Phone (optional)</label><input type="text" id="signupPhone" placeholder="01XXXXXXXXX"><span class="field-error" id="signupPhoneError"></span></div>
-          <div class="form-group"><label>Institution (optional)</label><input type="text" id="signupInstitution" placeholder="Your institution"><span class="field-error" id="signupInstError"></span></div>
+          <div class="form-group"><label>Institution (optional)</label><input type="text" id="signupInstitution" placeholder="Your institution"></div>
         </div>
         <div class="form-group"><label>Password</label><input type="password" id="signupPassword" placeholder="Min 6 characters" required minlength="6"><span class="field-error" id="signupPasswordError"></span></div>
         <div class="form-group"><label>Confirm Password</label><input type="password" id="signupConfirm" placeholder="Re-enter password" required><span class="field-error" id="signupConfirmError"></span></div>
@@ -112,50 +115,293 @@ body{font-family:'Plus Jakarta Sans',sans-serif;color:#2C3E55;background:linear-
 <script>
 (function(){
 'use strict';
-const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
-(function track(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;if(cur){cur.style.left=mx+'px';cur.style.top=my+'px'}if(ring){ring.style.left=rx+'px';ring.style.top=ry+'px'}requestAnimationFrame(track)})();
-document.addEventListener('mouseover',e=>{if(e.target.closest('a,button,.btn,input,.tab-btn'))document.body.classList.add('cursor-expanded')});
-document.addEventListener('mouseout',e=>{if(e.target.closest('a,button,.btn,input,.tab-btn'))document.body.classList.remove('cursor-expanded')});
 
-if(localStorage.getItem('token')){window.location.href='/dashboard.html'}
+// ==================== API CONFIGURATION ====================
+var API_BASE = (function(){
+  var host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1' || host === '' || host.includes('.local')) {
+    console.log('%c Altivon Academy %c DEMO MODE %c Running locally — no backend ',
+      'background:#0B1F3A;color:#fff;padding:6px 10px;font-family:serif;font-size:14px;border-radius:4px 0 0 4px;',
+      'background:#B8751A;color:#fff;padding:6px 10px;font-size:12px;',
+      'background:#2C3E55;color:#fff;padding:6px 10px;font-size:11px;border-radius:0 4px 4px 0;');
+    document.getElementById('demoBadge').style.display = 'inline-block';
+    return null;
+  }
+  return '/api';
+})();
 
-function generateFingerprint(){const c=[navigator.hardwareConcurrency||'u',navigator.deviceMemory||'u',screen.width+'x'+screen.height+'x'+screen.colorDepth,navigator.language,Intl.DateTimeFormat().resolvedOptions().timeZone,navigator.platform||'u',navigator.userAgent.replace(/\s+/g,'').substring(0,60)];let h=0;const s=c.join('###');for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return'fp_'+Math.abs(h).toString(36).substring(0,20)}
+// ==================== CURSOR ====================
+var cur = document.getElementById('cursor');
+var ring = document.getElementById('cursor-ring');
+var mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', function(e){ mx = e.clientX; my = e.clientY; });
+(function track(){
+  rx += (mx - rx) * 0.14;
+  ry += (my - ry) * 0.14;
+  if (cur) { cur.style.left = mx + 'px'; cur.style.top = my + 'px'; }
+  if (ring) { ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; }
+  requestAnimationFrame(track);
+})();
+document.addEventListener('mouseover', function(e){
+  if (e.target.closest('a,button,.btn,input,.tab-btn')) document.body.classList.add('cursor-expanded');
+});
+document.addEventListener('mouseout', function(e){
+  if (e.target.closest('a,button,.btn,input,.tab-btn')) document.body.classList.remove('cursor-expanded');
+});
 
-function switchTab(tab){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.textContent.toLowerCase().includes(tab==='login'?'sign in':'create')));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));document.getElementById(tab==='login'?'loginPanel':'signupPanel').classList.add('active');document.querySelectorAll('.alert').forEach(a=>a.classList.remove('show'))}
-window.switchTab=switchTab;
+// ==================== CHECK EXISTING SESSION ====================
+var existingToken = localStorage.getItem('token');
+if (existingToken) {
+  if (API_BASE) {
+    fetch(API_BASE + '/user/profile', {
+      headers: { 'Authorization': 'Bearer ' + existingToken }
+    }).then(function(r){
+      if (r.ok) { window.location.href = '/dashboard.html'; }
+      else { localStorage.removeItem('token'); localStorage.removeItem('user'); }
+    }).catch(function(){});
+  } else {
+    if (existingToken.startsWith('demo-')) {
+      window.location.href = '/dashboard.html';
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+    }
+  }
+}
 
-function showAlert(id,msg,type='error'){const el=document.getElementById(id);el.textContent=msg;el.className='alert show'+(type==='success'?' success':'');setTimeout(()=>el.classList.remove('show'),5000)}
-function setLoading(btnId,loading){const btn=document.getElementById(btnId);btn.classList.toggle('loading',loading);btn.disabled=loading}
+// ==================== FINGERPRINT ====================
+function generateFingerprint() {
+  var components = [
+    navigator.hardwareConcurrency || 'u',
+    navigator.deviceMemory || 'u',
+    screen.width + 'x' + screen.height + 'x' + screen.colorDepth,
+    navigator.language,
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+    navigator.platform || 'u'
+  ];
+  var hash = 0;
+  var str = components.join('###');
+  for (var i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return 'fp_' + Math.abs(hash).toString(36).substring(0, 20);
+}
 
-async function handleLogin(e){e.preventDefault();
-const email=document.getElementById('loginEmail').value.trim();const password=document.getElementById('loginPassword').value;
-document.querySelectorAll('#loginPanel .field-error').forEach(el=>el.classList.remove('show'));
-if(!email){document.getElementById('loginEmailError').textContent='Email is required';document.getElementById('loginEmailError').classList.add('show');return}
-if(!password||password.length<6){document.getElementById('loginPasswordError').textContent='Password must be at least 6 characters';document.getElementById('loginPasswordError').classList.add('show');return}
-setLoading('loginBtn',true);
-try{const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,device_fingerprint:generateFingerprint()})});
-const d=await r.json();if(!r.ok){showAlert('loginAlert',d.error||'Login failed');setLoading('loginBtn',false);return}
-localStorage.setItem('token',d.token);localStorage.setItem('user',JSON.stringify(d.user));window.location.href='/dashboard.html'}catch(e){showAlert('loginAlert','Network error. Please try again.');setLoading('loginBtn',false)}}
-window.handleLogin=handleLogin;
+// ==================== TAB SWITCHING ====================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(function(b, i){
+    b.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'signup' && i === 1));
+  });
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById(tab === 'login' ? 'loginPanel' : 'signupPanel').classList.add('active');
+  document.querySelectorAll('.alert').forEach(function(a){ a.classList.remove('show'); });
+}
+window.switchTab = switchTab;
 
-async function handleSignup(e){e.preventDefault();
-const name=document.getElementById('signupName').value.trim();const email=document.getElementById('signupEmail').value.trim();
-const phone=document.getElementById('signupPhone').value.trim();const password=document.getElementById('signupPassword').value;
-const confirm=document.getElementById('signupConfirm').value;
-document.querySelectorAll('#signupPanel .field-error').forEach(el=>el.classList.remove('show'));
-let hasError=false;
-if(!name){document.getElementById('signupNameError').textContent='Name is required';document.getElementById('signupNameError').classList.add('show');hasError=true}
-if(!email){document.getElementById('signupEmailError').textContent='Email is required';document.getElementById('signupEmailError').classList.add('show');hasError=true}
-if(phone&&!/^01\d{9}$/.test(phone)){document.getElementById('signupPhoneError').textContent='Invalid Bangladeshi phone number';document.getElementById('signupPhoneError').classList.add('show');hasError=true}
-if(!password||password.length<6){document.getElementById('signupPasswordError').textContent='Min 6 characters';document.getElementById('signupPasswordError').classList.add('show');hasError=true}
-if(password!==confirm){document.getElementById('signupConfirmError').textContent='Passwords do not match';document.getElementById('signupConfirmError').classList.add('show');hasError=true}
-if(hasError)return;
-setLoading('signupBtn',true);
-try{const r=await fetch('/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password,phone:phone||null,device_fingerprint:generateFingerprint()})});
-const d=await r.json();if(!r.ok){showAlert('signupAlert',d.error||'Signup failed');setLoading('signupBtn',false);return}
-document.getElementById('signupForm').style.display='none';document.getElementById('pendingNotice').style.display='block'}catch(e){showAlert('signupAlert','Network error. Please try again.');setLoading('signupBtn',false)}}
-window.handleSignup=handleSignup;
+// ==================== ALERTS & LOADING ====================
+function showAlert(id, msg, type) {
+  var el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = 'alert show';
+  if (type === 'success') el.classList.add('success');
+  setTimeout(function(){ el.classList.remove('show'); }, 8000);
+}
+function setLoading(btnId, loading) {
+  var btn = document.getElementById(btnId);
+  if (loading) { btn.classList.add('loading'); btn.disabled = true; }
+  else { btn.classList.remove('loading'); btn.disabled = false; }
+}
+
+// ==================== DEMO LOGIN (NO CREDENTIALS EXPOSED) ====================
+function demoLoginUser(email) {
+  // Demo mode only stores user info locally — NO real credentials are checked
+  // In production, the backend validates passwords securely
+  var userId = Math.abs(hashCode(email)).toString(36).substring(0, 8);
+  var userName = email.split('@')[0]
+    .replace(/[^a-zA-Z]/g, ' ')
+    .replace(/\b\w/g, function(l){ return l.toUpperCase(); });
+  
+  return {
+    token: 'demo-' + userId + '-' + Date.now(),
+    user: {
+      id: userId,
+      name: userName || 'Student',
+      email: email,
+      role: 'user', // Demo mode always creates regular users, never admin
+      phone: null
+    }
+  };
+}
+
+function hashCode(str) {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+// ==================== HANDLE LOGIN ====================
+async function handleLogin(e) {
+  e.preventDefault();
+  var email = document.getElementById('loginEmail').value.trim();
+  var password = document.getElementById('loginPassword').value;
+
+  document.querySelectorAll('#loginPanel .field-error').forEach(function(el){ el.classList.remove('show'); });
+
+  // Basic validation
+  if (!email) {
+    document.getElementById('loginEmailError').textContent = 'Email is required';
+    document.getElementById('loginEmailError').classList.add('show');
+    return;
+  }
+  if (!password || password.length < 6) {
+    document.getElementById('loginPasswordError').textContent = 'Password must be at least 6 characters';
+    document.getElementById('loginPasswordError').classList.add('show');
+    return;
+  }
+  if (!email.includes('@') || !email.includes('.')) {
+    document.getElementById('loginEmailError').textContent = 'Please enter a valid email';
+    document.getElementById('loginEmailError').classList.add('show');
+    return;
+  }
+
+  setLoading('loginBtn', true);
+
+  // ===== DEMO MODE =====
+  if (!API_BASE) {
+    await new Promise(function(r){ setTimeout(r, 500); });
+    
+    // Demo mode: accepts any email+password combination
+    // This is ONLY for local preview/testing — never in production
+    var data = demoLoginUser(email);
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    window.location.href = '/dashboard.html';
+    return;
+  }
+
+  // ===== REAL API CALL =====
+  try {
+    var r = await fetch(API_BASE + '/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        device_fingerprint: generateFingerprint()
+      })
+    });
+
+    var d = await r.json();
+
+    if (!r.ok) {
+      showAlert('loginAlert', d.error || 'Invalid email or password. Please try again.');
+      setLoading('loginBtn', false);
+      return;
+    }
+
+    localStorage.setItem('token', d.token);
+    localStorage.setItem('user', JSON.stringify(d.user));
+    
+    if (d.user.role === 'admin') {
+      window.location.href = '/admin.html';
+    } else {
+      window.location.href = '/dashboard.html';
+    }
+  } catch (err) {
+    console.error('Login error:', err);
+    showAlert('loginAlert', 'Cannot connect to server. Please try again later.');
+    setLoading('loginBtn', false);
+  }
+}
+window.handleLogin = handleLogin;
+
+// ==================== HANDLE SIGNUP ====================
+async function handleSignup(e) {
+  e.preventDefault();
+  var name = document.getElementById('signupName').value.trim();
+  var email = document.getElementById('signupEmail').value.trim();
+  var phone = document.getElementById('signupPhone').value.trim();
+  var password = document.getElementById('signupPassword').value;
+  var confirm = document.getElementById('signupConfirm').value;
+
+  document.querySelectorAll('#signupPanel .field-error').forEach(function(el){ el.classList.remove('show'); });
+
+  var hasError = false;
+  if (!name) {
+    document.getElementById('signupNameError').textContent = 'Name is required';
+    document.getElementById('signupNameError').classList.add('show');
+    hasError = true;
+  }
+  if (!email || !email.includes('@')) {
+    document.getElementById('signupEmailError').textContent = 'Valid email is required';
+    document.getElementById('signupEmailError').classList.add('show');
+    hasError = true;
+  }
+  if (phone && !/^01\d{9}$/.test(phone)) {
+    document.getElementById('signupPhoneError').textContent = 'Invalid phone number (01XXXXXXXXX)';
+    document.getElementById('signupPhoneError').classList.add('show');
+    hasError = true;
+  }
+  if (!password || password.length < 6) {
+    document.getElementById('signupPasswordError').textContent = 'Password must be at least 6 characters';
+    document.getElementById('signupPasswordError').classList.add('show');
+    hasError = true;
+  }
+  if (password !== confirm) {
+    document.getElementById('signupConfirmError').textContent = 'Passwords do not match';
+    document.getElementById('signupConfirmError').classList.add('show');
+    hasError = true;
+  }
+  if (hasError) return;
+
+  setLoading('signupBtn', true);
+
+  // ===== DEMO MODE =====
+  if (!API_BASE) {
+    await new Promise(function(r){ setTimeout(r, 400); });
+    document.getElementById('signupForm').style.display = 'none';
+    document.getElementById('pendingNotice').style.display = 'block';
+    setLoading('signupBtn', false);
+    return;
+  }
+
+  // ===== REAL API CALL =====
+  try {
+    var r = await fetch(API_BASE + '/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        password: password,
+        phone: phone || null,
+        device_fingerprint: generateFingerprint()
+      })
+    });
+
+    var d = await r.json();
+
+    if (!r.ok) {
+      showAlert('signupAlert', d.error || 'Signup failed. Please try again.');
+      setLoading('signupBtn', false);
+      return;
+    }
+
+    document.getElementById('signupForm').style.display = 'none';
+    document.getElementById('pendingNotice').style.display = 'block';
+    setLoading('signupBtn', false);
+  } catch (err) {
+    console.error('Signup error:', err);
+    showAlert('signupAlert', 'Cannot connect to server. Please try again later.');
+    setLoading('signupBtn', false);
+  }
+}
+window.handleSignup = handleSignup;
+
 })();
 </script>
 </body>
