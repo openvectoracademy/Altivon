@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Lecture Player — AcademIQ</title>
+<meta name="description" content="Watch your course lecture with premium playback controls.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{font-size:16px}
+:root{--navy:#0B1F3A;--navy-2:#112D52;--navy-3:#1A3F6F;--gold:#B8751A;--gold-2:#CF8B28;--t4:#94A3B5;--r1:8px;--r2:12px;--r3:18px;--hh:56px}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#000;color:#fff;height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column;-webkit-user-select:none;user-select:none}
+.hdr{height:var(--hh);background:var(--navy);border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;padding:0 14px;flex-shrink:0;z-index:100}
+.hdr-inner{display:flex;align-items:center;gap:10px;width:100%;max-width:1400px;margin:0 auto}
+.back-btn{background:none;border:none;color:var(--t4);cursor:pointer;padding:6px;display:flex;align-items:center;text-decoration:none;transition:color .15s}
+.back-btn:hover{color:#fff}
+.back-btn svg{width:18px;height:18px}
+.hdr-info{flex:1;min-width:0;text-align:center}
+.hdr-info h1{font-family:'Fraunces',serif;font-size:.9rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400}
+.hdr-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;border:1.5px solid transparent;border-radius:var(--r1);cursor:pointer;text-decoration:none;white-space:nowrap;transition:all .15s;letter-spacing:.01em;padding:6px 12px;font-size:.7rem}
+.btn-ghost{background:transparent;color:rgba(255,255,255,.55);border-color:rgba(255,255,255,.12)}
+.btn-ghost:hover{background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.25)}
+
+.player-wrap{flex:1;display:flex;align-items:center;justify-content:center;background:#000;position:relative}
+.player-box{position:relative;width:100%;max-width:1200px;aspect-ratio:16/9;background:#000;overflow:hidden}
+.player-box:fullscreen{max-width:none;aspect-ratio:unset}
+#ytPlayer{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
+
+.top-bar{position:absolute;top:0;left:0;right:0;height:56px;background:#000;z-index:50;display:flex;align-items:center;padding:0 18px;transition:opacity .3s ease;pointer-events:none}
+.top-bar.hidden{opacity:0}
+.top-bar-text{font-family:'Fraunces',serif;font-size:.72rem;color:rgba(255,255,255,.2);letter-spacing:.05em}
+.top-bar-watermark{font-family:'Fraunces',serif;font-size:.62rem;color:rgba(255,255,255,.15);letter-spacing:.06em;margin-left:auto}
+
+.initial-cover{position:absolute;inset:0;z-index:55;background:#000;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .4s}
+.initial-cover.hidden{opacity:0;pointer-events:none}
+.cover-text{font-family:'Fraunces',serif;font-size:1.2rem;color:rgba(255,255,255,.4);letter-spacing:.04em}
+.pause-cover{position:absolute;inset:0;z-index:56;background:#000;display:none;align-items:center;justify-content:center;cursor:pointer}
+.pause-cover.show{display:flex}
+.pause-cover .cover-text{font-size:1rem}
+
+.spinner-el{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;z-index:8;display:none}
+@keyframes spin{to{transform:translate(-50%,-50%)rotate(360deg)}}
+
+.ui-layer{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;pointer-events:none;opacity:0;transition:opacity .18s}
+.player-box:hover .ui-layer,.player-box.show-ui .ui-layer{opacity:1}
+.gesture-zone{position:absolute;inset:0;z-index:20;pointer-events:auto;cursor:pointer}
+
+.ctr-pause-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)scale(.85);width:62px;height:62px;background:rgba(11,31,58,.9);border:1.5px solid rgba(255,255,255,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;z-index:42;transition:opacity .2s,transform .2s,background .15s;cursor:pointer}
+.player-box.show-ui .ctr-pause-btn.playing,.player-box.show-ui .ctr-pause-btn.paused{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)scale(1)}
+.ctr-pause-btn:hover{background:rgba(184,117,26,.3);border-color:var(--gold)}
+.ctr-pause-btn svg{width:22px;height:22px;color:#fff}
+.ctr-pause-btn .icon-play{display:none}
+.ctr-pause-btn .icon-pause{display:none}
+.ctr-pause-btn.playing .icon-pause{display:block}
+.ctr-pause-btn.paused .icon-play{display:block}
+
+.skip-side{position:absolute;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;opacity:0;pointer-events:none;z-index:45;transition:opacity .15s}
+.skip-side.left{left:13%}
+.skip-side.right{right:13%}
+.skip-side.on{opacity:1}
+.skip-side-ring{width:56px;height:56px;border-radius:50%;border:2px solid var(--gold);background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;position:relative}
+.skip-side-ring svg{width:20px;height:20px;color:var(--gold)}
+.skip-side-label{font-size:.72rem;font-weight:700;color:#fff;letter-spacing:.02em}
+@keyframes rippleArc{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.75);opacity:0}}
+.skip-side-ring::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--gold);opacity:0}
+.skip-side.on .skip-side-ring::after{animation:rippleArc .55s ease-out forwards}
+
+.skip-fb{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)scale(.8);background:rgba(0,0,0,.92);padding:10px 20px;border-radius:30px;display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;z-index:45;border:1px solid var(--gold);transition:all .12s}
+.skip-fb.on{opacity:1;transform:translate(-50%,-50%)scale(1)}
+.skip-fb svg{width:16px;height:16px;color:var(--gold)}
+.skip-fb span{font-size:.85rem;font-weight:600;color:#fff}
+
+.drag-preview{position:absolute;bottom:85px;width:160px;aspect-ratio:16/9;background:#000;border:1px solid rgba(255,255,255,.15);border-radius:6px;overflow:hidden;display:none;pointer-events:none;z-index:35;box-shadow:0 8px 32px rgba(0,0,0,.6);transform:translateX(-50%)}
+.drag-preview.on{display:block}
+.drag-preview img{width:100%;height:100%;object-fit:cover;opacity:.7}
+.drag-preview .drag-time{position:absolute;bottom:0;left:0;right:0;padding:6px 8px;background:rgba(0,0,0,.85);font-size:.65rem;font-weight:600;color:#fff;text-align:center}
+
+.ctrl-bar{padding:18px 18px 14px;opacity:0;pointer-events:none;transition:opacity .18s;position:relative;z-index:30;margin-top:auto;background:#000}
+.ctrl-bar.on{opacity:1;pointer-events:auto}
+.prog-wrap{position:relative;width:100%;height:28px;display:flex;align-items:center;margin-bottom:4px}
+.prog-track{width:100%;height:5px;background:rgba(255,255,255,.12);border-radius:3px;cursor:pointer;position:relative;transition:height .15s}
+.prog-wrap:hover .prog-track,.prog-wrap.dragging .prog-track{height:7px}
+.prog-fill{height:100%;width:0%;background:var(--gold);border-radius:3px;position:relative;box-shadow:0 0 8px rgba(184,117,26,.35)}
+.prog-fill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:13px;height:13px;background:var(--gold);border-radius:50%;opacity:0;transition:opacity .12s;box-shadow:0 0 6px rgba(184,117,26,.5)}
+.prog-wrap:hover .prog-fill::after,.prog-wrap.dragging .prog-fill::after{opacity:1}
+.prog-buffered{position:absolute;top:0;left:0;height:100%;width:0%;background:rgba(255,255,255,.18);border-radius:3px;pointer-events:none}
+.ctrl-row{display:flex;align-items:center;justify-content:space-between;height:30px}
+.ctrl-left,.ctrl-right{display:flex;align-items:center;gap:10px}
+.ctrl-ic{background:transparent;border:none;color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .12s;padding:0}
+.ctrl-ic:hover{background:rgba(255,255,255,.1);color:var(--gold)}
+.ctrl-ic svg{width:15px;height:15px}
+.time-display{font-size:.7rem;font-weight:500;color:#fff;min-width:78px;font-variant-numeric:tabular-nums}
+.vol-wrap{display:flex;align-items:center;gap:4px}
+input[type=range]{width:48px;height:3px;accent-color:var(--gold);background:rgba(255,255,255,.12);border-radius:2px;cursor:pointer}
+.speed-btn,.quality-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:.62rem;font-weight:600;cursor:pointer;padding:3px 8px;border-radius:4px;transition:all .12s;font-family:'Plus Jakarta Sans',sans-serif}
+.speed-btn:hover{background:var(--gold);color:#000;border-color:var(--gold)}
+.quality-btn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)}
+.popup-wrap{position:relative}
+.speed-popup,.quality-popup{position:absolute;bottom:38px;right:0;background:var(--navy-2);border:1px solid rgba(255,255,255,.12);border-radius:var(--r2);padding:5px 0;min-width:86px;z-index:300;box-shadow:0 14px 44px rgba(0,0,0,.75);display:none;flex-direction:column}
+.speed-popup.open,.quality-popup.open{display:flex}
+.speed-popup-item,.quality-popup-item{padding:7px 16px;font-size:.72rem;font-weight:500;color:rgba(255,255,255,.65);cursor:pointer;transition:all .1s;font-family:'Plus Jakarta Sans',sans-serif;text-align:center;white-space:nowrap}
+.speed-popup-item:hover,.quality-popup-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.speed-popup-item.active,.quality-popup-item.active{color:var(--gold);font-weight:700}
+
+.nav-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:var(--navy);border-top:1px solid rgba(255,255,255,.06);flex-shrink:0}
+.nav-info{flex:1;min-width:0}
+.nav-info h2{font-family:'Fraunces',serif;font-size:.85rem;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-info p{font-size:.65rem;color:rgba(255,255,255,.35)}
+.ftr{background:var(--navy);border-top:1px solid rgba(255,255,255,.04);padding:8px 14px;text-align:center;flex-shrink:0}
+.ftr p{font-size:.65rem;color:rgba(255,255,255,.14)}
+.toast{position:fixed;bottom:20px;right:20px;z-index:9999;padding:10px 16px;border-radius:var(--r2);font-size:.78rem;font-weight:500;box-shadow:0 20px 48px rgba(0,0,0,.5);opacity:0;transform:translateY(8px);transition:all .2s;pointer-events:none;background:var(--navy);color:#fff;border:1px solid rgba(255,255,255,.1)}
+.toast.on{opacity:1;transform:translateY(0)}
+@media(max-width:600px){.hdr-info h1{font-size:.78rem}.ctrl-bar{padding:0 10px 8px}.ctrl-left,.ctrl-right{gap:6px}.time-display{font-size:.65rem;min-width:65px}.skip-side.left{left:7%}.skip-side.right{right:7%}}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-inner">
+    <a href="/dashboard.html" class="back-btn" id="backLink">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <div class="hdr-info"><h1 id="headerTitle">Loading...</h1></div>
+    <div class="hdr-right">
+      <button class="btn btn-ghost" id="prevBtn" onclick="prevLecture()" style="display:none">Prev</button>
+      <button class="btn btn-ghost" id="nextBtn" onclick="nextLecture()" style="display:none">Next</button>
+    </div>
+  </div>
+</header>
+
+<div class="player-wrap">
+  <div class="player-box" id="playerBox" tabindex="0">
+    <div id="ytPlayer"></div>
+
+    <div class="top-bar" id="topBar">
+      <span class="top-bar-text">AcademIQ</span>
+      <span class="top-bar-watermark">Protected Content</span>
+    </div>
+
+    <div class="initial-cover" id="initialCover"><span class="cover-text">Click to Start</span></div>
+    <div class="pause-cover" id="pauseCover"><span class="cover-text">Click to Resume</span></div>
+    <div class="spinner-el" id="spinner"></div>
+
+    <div class="drag-preview" id="dragPreview">
+      <img src="" id="dragThumb" alt="">
+      <div class="drag-time" id="dragTime">00:00</div>
+    </div>
+
+    <div class="ui-layer" id="uiLayer">
+      <div class="gesture-zone" id="gestureZone"></div>
+
+      <div class="ctr-pause-btn" id="ctrPauseBtn">
+        <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </div>
+
+      <div class="skip-side left" id="skipLeft">
+        <div class="skip-side-ring">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/></svg>
+        </div>
+        <span class="skip-side-label" id="skipLeftLabel">-10s</span>
+      </div>
+
+      <div class="skip-side right" id="skipRight">
+        <div class="skip-side-ring">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg>
+        </div>
+        <span class="skip-side-label" id="skipRightLabel">+10s</span>
+      </div>
+
+      <div class="skip-fb" id="skipFb">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="skipIcon"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg>
+        <span id="skipText">+5s</span>
+      </div>
+
+      <div class="ctrl-bar" id="ctrlBar">
+        <div class="prog-wrap" id="progWrap">
+          <div class="prog-track" id="progTrack">
+            <div class="prog-buffered" id="progBuffered"></div>
+            <div class="prog-fill" id="progFill"></div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-left">
+            <button class="ctrl-ic" id="playPauseBtn">
+              <svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" id="pauseIcon" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+            </button>
+            <button class="ctrl-ic" id="rewindBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/></svg></button>
+            <button class="ctrl-ic" id="forwardBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/></svg></button>
+            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+          </div>
+          <div class="ctrl-right">
+            <div class="vol-wrap">
+              <button class="ctrl-ic" id="muteToggle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="volHigh"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="volMute" style="display:none"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+              </button>
+              <input type="range" id="volSlider" min="0" max="100" value="100">
+            </div>
+            <div class="popup-wrap" id="qualityWrap">
+              <button class="quality-btn" id="qualityBtn">Auto</button>
+              <div class="quality-popup" id="qualityPopup"></div>
+            </div>
+            <div class="popup-wrap" id="speedWrap">
+              <button class="speed-btn" id="speedBtn">1×</button>
+              <div class="speed-popup" id="speedPopup"></div>
+            </div>
+            <button class="ctrl-ic" id="fullscreenBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <div class="nav-info"><h2 id="currentTitle">Loading...</h2><p id="currentMeta"></p></div>
+</div>
+
+<footer class="ftr"><p>Protected Content &copy; 2026 AcademIQ</p></footer>
+<div class="toast" id="toast"></div>
+
+<script>
+var API_BASE = '/api';
+function getToken(){return localStorage.getItem('token')||''}
+function getUser(){try{return JSON.parse(localStorage.getItem('user')||'null')}catch(e){return null}}
+if(!getUser()){window.location.href='/auth.html'}
+
+var allLectures=[],currentIndex=0,player=null,isDragging=false;
+var hideTimer=null,topBarTimer=null,pauseCoverTimer=null;
+var dragCurrentPct=0;
+var speeds=[0.5,0.75,1,1.25,1.5,1.75,2,2.5,3,3.5];var speedIdx=2;
+var qualityLabels={'highres':'4K','hd2160':'2160p','hd1440':'1440p','hd1080':'1080p','hd720':'720p','large':'480p','medium':'360p','small':'240p','tiny':'144p','auto':'Auto','default':'Auto'};
+var currentQuality='auto';var availableQualities=[];
+
+var playerBox=document.getElementById('playerBox'),gestureZone=document.getElementById('gestureZone');
+var ctrPauseBtn=document.getElementById('ctrPauseBtn'),skipLeft=document.getElementById('skipLeft'),skipLeftLabel=document.getElementById('skipLeftLabel');
+var skipRight=document.getElementById('skipRight'),skipRightLabel=document.getElementById('skipRightLabel');
+var skipFb=document.getElementById('skipFb'),skipIcon=document.getElementById('skipIcon'),skipText=document.getElementById('skipText');
+var ctrlBar=document.getElementById('ctrlBar'),playIcon=document.getElementById('playIcon'),pauseIcon=document.getElementById('pauseIcon');
+var timeDisplay=document.getElementById('timeDisplay'),progTrack=document.getElementById('progTrack'),progFill=document.getElementById('progFill');
+var progBuffered=document.getElementById('progBuffered'),progWrap=document.getElementById('progWrap');
+var volSlider=document.getElementById('volSlider'),volHigh=document.getElementById('volHigh'),volMute=document.getElementById('volMute');
+var speedBtn=document.getElementById('speedBtn'),speedPopup=document.getElementById('speedPopup');
+var qualityBtn=document.getElementById('qualityBtn'),qualityPopup=document.getElementById('qualityPopup');
+var topBar=document.getElementById('topBar'),initialCover=document.getElementById('initialCover'),pauseCover=document.getElementById('pauseCover');
+var currentTitle=document.getElementById('currentTitle'),currentMeta=document.getElementById('currentMeta'),headerTitle=document.getElementById('headerTitle');
+var prevBtn=document.getElementById('prevBtn'),nextBtn=document.getElementById('nextBtn');
+var dragPreview=document.getElementById('dragPreview'),dragThumb=document.getElementById('dragThumb'),dragTime=document.getElementById('dragTime');
+var spinner=document.getElementById('spinner');
+
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');setTimeout(function(){t.classList.remove('on')},2200)}
+function formatTime(sec){if(!sec||sec<0)return'00:00';var m=Math.floor(sec/60),s=Math.floor(sec%60);return(m<10?'0'+m:m)+':'+(s<10?'0'+s:s)}
+
+function showControlsAndTopBar(persist){
+  playerBox.classList.add('show-ui');ctrlBar.classList.add('on');topBar.classList.remove('hidden');pauseCover.classList.remove('show');
+  clearTimeout(hideTimer);clearTimeout(topBarTimer);clearTimeout(pauseCoverTimer);
+  if(persist)return;
+  if(!isDragging){
+    hideTimer=setTimeout(function(){playerBox.classList.remove('show-ui');ctrlBar.classList.remove('on');
+      if(player&&player.getPlayerState&&player.getPlayerState()===2){pauseCoverTimer=setTimeout(function(){pauseCover.querySelector('.cover-text').textContent='Click to Resume';pauseCover.classList.add('show')},300)}},4000);
+    topBarTimer=setTimeout(function(){topBar.classList.add('hidden')},5000)
+  }
+}
+
+function setIcons(playing){playIcon.style.display=playing?'none':'block';pauseIcon.style.display=playing?'block':'none';
+  if(playing){ctrPauseBtn.classList.add('playing');ctrPauseBtn.classList.remove('paused')}else{ctrPauseBtn.classList.remove('playing');ctrPauseBtn.classList.add('paused')}}
+
+function updateNavButtons(){prevBtn.style.display=currentIndex>0?'inline-flex':'none';nextBtn.style.display=currentIndex<allLectures.length-1?'inline-flex':'none'}
+
+function loadLecture(idx){if(!allLectures.length||idx<0||idx>=allLectures.length)return;var lec=allLectures[idx];currentIndex=idx;
+  currentTitle.textContent=lec.title;currentMeta.textContent=(lec.chapter_title||'')+' · '+(lec.subject_name||'');headerTitle.textContent=lec.title;
+  updateNavButtons();if(player&&player.loadVideoById)player.loadVideoById(lec.yt_video_id)}
+
+function prevLecture(){if(currentIndex>0){pauseCover.classList.remove('show');loadLecture(currentIndex-1)}}
+function nextLecture(){if(currentIndex<allLectures.length-1){pauseCover.classList.remove('show');loadLecture(currentIndex+1)}}
+
+function updateProgress(){if(!player||typeof player.getCurrentTime!=='function'){requestAnimationFrame(updateProgress);return}
+  if(!isDragging){var c=player.getCurrentTime()||0,d=player.getDuration()||1;progFill.style.width=(c/d)*100+'%';timeDisplay.textContent=formatTime(c)+' / '+formatTime(d);
+    try{var b=player.getVideoLoadedFraction()||0;progBuffered.style.width=(b*100)+'%'}catch(e){}}requestAnimationFrame(updateProgress)}
+
+function togglePlay(){if(!player)return;if(player.getPlayerState()===1)player.pauseVideo();else{pauseCover.classList.remove('show');player.playVideo()}}
+
+var skipLTimer=null,skipRTimer=null;
+function skip(s){if(!player)return;player.seekTo((player.getCurrentTime()||0)+s,true);
+  if(s<0){skipLeftLabel.textContent=s+'s';skipLeft.classList.remove('on');void skipLeft.offsetWidth;skipLeft.classList.add('on');clearTimeout(skipLTimer);skipLTimer=setTimeout(function(){skipLeft.classList.remove('on')},750)}
+  else{skipRightLabel.textContent='+'+s+'s';skipRight.classList.remove('on');void skipRight.offsetWidth;skipRight.classList.add('on');clearTimeout(skipRTimer);skipRTimer=setTimeout(function(){skipRight.classList.remove('on')},750)}}
+
+function skipKeyboard(s){if(!player)return;player.seekTo((player.getCurrentTime()||0)+s,true);
+  skipFb.classList.add('on');skipIcon.innerHTML=s<0?'<polygon points="11 19 2 12 11 5 11 19"/><polygon points="22 19 13 12 22 5 22 19"/>':'<polygon points="13 19 22 12 13 5 13 19"/><polygon points="2 19 11 12 2 5 2 19"/>';
+  skipText.textContent=(s<0?'':'+')+s+'s';clearTimeout(window._st);window._st=setTimeout(function(){skipFb.classList.remove('on')},700)}
+
+function getPctFromEvent(e){var rect=progTrack.getBoundingClientRect();var x=e.touches?e.touches[0].clientX:e.clientX;return Math.max(0,Math.min(1,(x-rect.left)/rect.width))}
+function updateDragPreview(e){if(!player||!allLectures[currentIndex])return;var d=player.getDuration()||1;dragTime.textContent=formatTime(dragCurrentPct*d);var x=e.touches?e.touches[0].clientX:e.clientX;dragPreview.style.left=x+'px';dragThumb.src='https://img.youtube.com/vi/'+allLectures[currentIndex].yt_video_id+'/maxresdefault.jpg'}
+
+progTrack.addEventListener('click',function(e){if(!player)return;var rect=progTrack.getBoundingClientRect();player.seekTo(((e.clientX-rect.left)/rect.width)*player.getDuration(),true);showControlsAndTopBar(false)});
+progTrack.addEventListener('mousedown',function(e){isDragging=true;progWrap.classList.add('dragging');dragCurrentPct=getPctFromEvent(e);progFill.style.width=(dragCurrentPct*100)+'%';dragPreview.classList.add('on');updateDragPreview(e);e.preventDefault()});
+progTrack.addEventListener('touchstart',function(e){isDragging=true;progWrap.classList.add('dragging');dragCurrentPct=getPctFromEvent(e);progFill.style.width=(dragCurrentPct*100)+'%';dragPreview.classList.add('on');updateDragPreview(e)},{passive:false});
+document.addEventListener('mousemove',function(e){if(!isDragging)return;dragCurrentPct=getPctFromEvent(e);progFill.style.width=(dragCurrentPct*100)+'%';if(player){var d=player.getDuration()||1;timeDisplay.textContent=formatTime(dragCurrentPct*d)+' / '+formatTime(d)}updateDragPreview(e)});
+document.addEventListener('touchmove',function(e){if(!isDragging)return;dragCurrentPct=getPctFromEvent(e);progFill.style.width=(dragCurrentPct*100)+'%';if(player){var d=player.getDuration()||1;timeDisplay.textContent=formatTime(dragCurrentPct*d)+' / '+formatTime(d)}updateDragPreview(e)},{passive:false});
+document.addEventListener('mouseup',function(){if(!isDragging)return;isDragging=false;progWrap.classList.remove('dragging');dragPreview.classList.remove('on');if(player){player.seekTo(dragCurrentPct*player.getDuration(),true);showControlsAndTopBar(false)}});
+document.addEventListener('touchend',function(){if(!isDragging)return;isDragging=false;progWrap.classList.remove('dragging');dragPreview.classList.remove('on');if(player){player.seekTo(dragCurrentPct*player.getDuration(),true);showControlsAndTopBar(false)}});
+
+function buildSpeedPopup(){speedPopup.innerHTML='';speeds.forEach(function(s,i){var el=document.createElement('div');el.className='speed-popup-item'+(i===speedIdx?' active':'');el.textContent=s+'×';el.addEventListener('click',function(e){e.stopPropagation();speedIdx=i;if(player)player.setPlaybackRate(s);speedBtn.textContent=s+'×';localStorage.setItem('academiq_speed',s);buildSpeedPopup();speedPopup.classList.remove('open')});speedPopup.appendChild(el)})}
+speedBtn.addEventListener('click',function(e){e.stopPropagation();qualityPopup.classList.remove('open');speedPopup.classList.toggle('open')});
+
+function buildQualityPopup(){qualityPopup.innerHTML='';var list=availableQualities.length?availableQualities:['auto'];if(!list.includes('auto'))list=['auto'].concat(list);list.forEach(function(q){var el=document.createElement('div');el.className='quality-popup-item'+(q===currentQuality?' active':'');el.textContent=qualityLabels[q]||q;el.addEventListener('click',function(e){e.stopPropagation();currentQuality=q;if(player){player.setPlaybackQuality(q==='auto'?'default':q)}qualityBtn.textContent=qualityLabels[q]||q;buildQualityPopup();qualityPopup.classList.remove('open')});qualityPopup.appendChild(el)})}
+qualityBtn.addEventListener('click',function(e){e.stopPropagation();speedPopup.classList.remove('open');if(player&&player.getAvailableQualityLevels){var avail=player.getAvailableQualityLevels();if(avail&&avail.length)availableQualities=avail}buildQualityPopup();qualityPopup.classList.toggle('open')});
+document.addEventListener('click',function(){speedPopup.classList.remove('open');qualityPopup.classList.remove('open')});
+
+async function init(){
+  var params=new URLSearchParams(location.search);var lid=params.get('lecture'),cid=params.get('course');
+  if(!lid||!cid){window.location.href='/dashboard.html';return}
+  document.getElementById('backLink').href='/learn.html?course='+cid;
+  var savedSpeed=parseFloat(localStorage.getItem('academiq_speed')||'1');var si=speeds.indexOf(savedSpeed);if(si>=0)speedIdx=si;
+  speedBtn.textContent=speeds[speedIdx]+'×';buildSpeedPopup();buildQualityPopup();
+  try{
+    var r=await fetch(API_BASE+'/courses/'+cid,{headers:{'Authorization':'Bearer '+getToken()}});
+    if(!r.ok){window.location.href='/dashboard.html';return}
+    var d=await r.json();
+    (d.subjects||[]).forEach(function(s){(s.papers||[]).forEach(function(p){(p.chapters||[]).forEach(function(ch){(ch.lectures||[]).forEach(function(l){allLectures.push({id:l.id,title:l.title,yt_video_id:l.yt_video_id,chapter_title:ch.title,subject_name:s.name})})})})});
+    currentIndex=allLectures.findIndex(function(l){return String(l.id)===String(lid)});if(currentIndex<0)currentIndex=0;
+    if(!allLectures.length){currentTitle.textContent='No lectures';return}
+    currentTitle.textContent=allLectures[currentIndex].title;currentMeta.textContent=(allLectures[currentIndex].chapter_title||'')+' · '+(allLectures[currentIndex].subject_name||'');headerTitle.textContent=allLectures[currentIndex].title;updateNavButtons();
+    createPlayer(allLectures[currentIndex].yt_video_id)
+  }catch(e){currentTitle.textContent='Error loading course'}
+}
+
+function createPlayer(vid){
+  if(player){try{player.destroy()}catch(e){}player=null}
+  document.getElementById('ytPlayer').innerHTML='';
+  player=new YT.Player('ytPlayer',{height:'100%',width:'100%',videoId:vid,playerVars:{autoplay:0,controls:0,rel:0,modestbranding:1,iv_load_policy:3,fs:0,disablekb:1,playsinline:1,origin:location.origin,showinfo:0,cc_load_policy:0,autohide:1,wmode:'opaque'},events:{onReady:function(){requestAnimationFrame(updateProgress);player.setVolume(volSlider.value);player.setPlaybackRate(speeds[speedIdx])},onStateChange:function(e){var s=e.data;
+    if(s===1){pauseCover.classList.remove('show');setIcons(true);spinner.style.display='none';showControlsAndTopBar(false);
+      setTimeout(function(){if(player&&player.getAvailableQualityLevels){var avail=player.getAvailableQualityLevels();if(avail&&avail.length)availableQualities=avail;var cur=player.getPlaybackQuality();if(cur){currentQuality=cur;qualityBtn.textContent=qualityLabels[cur]||cur}buildQualityPopup()}},1500)}
+    else if(s===2){setIcons(false);showControlsAndTopBar(true)}
+    else if(s===3){spinner.style.display='block';topBar.classList.remove('hidden');playerBox.classList.add('show-ui');ctrlBar.classList.add('on');clearTimeout(hideTimer);clearTimeout(topBarTimer);clearTimeout(pauseCoverTimer)}
+    else if(s===0){setIcons(false);pauseCover.querySelector('.cover-text').textContent='Click to Start';pauseCover.classList.add('show');if(currentIndex<allLectures.length-1)setTimeout(function(){nextLecture()},2000)}}}})
+}
+
+playerBox.addEventListener('mousemove',function(){showControlsAndTopBar(false)});
+playerBox.addEventListener('mouseleave',function(){if(!isDragging)playerBox.classList.remove('show-ui')});
+gestureZone.addEventListener('click',function(e){if(e.target.closest('.ctrl-bar'))return;showControlsAndTopBar(false);var rect=playerBox.getBoundingClientRect();var cx=e.clientX-rect.left,cy=e.clientY-rect.top;var inCenter=cx>rect.width*.33&&cx<rect.width*.66&&cy>rect.height*.25&&cy<rect.height*.75;if(inCenter&&player&&player.getPlayerState&&player.getPlayerState()===2)togglePlay()});
+ctrPauseBtn.addEventListener('click',function(e){e.stopPropagation();togglePlay()});
+initialCover.addEventListener('click',function(){initialCover.classList.add('hidden');if(player&&player.playVideo)player.playVideo()});
+pauseCover.addEventListener('click',function(){pauseCover.classList.remove('show');if(player)player.playVideo()});
+document.getElementById('playPauseBtn').addEventListener('click',function(e){e.stopPropagation();togglePlay()});
+document.getElementById('rewindBtn').addEventListener('click',function(e){e.stopPropagation();skip(-10);showControlsAndTopBar(false)});
+document.getElementById('forwardBtn').addEventListener('click',function(e){e.stopPropagation();skip(10);showControlsAndTopBar(false)});
+volSlider.addEventListener('input',function(e){if(!player)return;var v=parseInt(e.target.value);player.setVolume(v);volHigh.style.display=v===0?'none':'block';volMute.style.display=v===0?'block':'none'});
+document.getElementById('muteToggle').addEventListener('click',function(e){e.stopPropagation();if(!player)return;if(player.isMuted()){player.unMute();volSlider.value=player.getVolume();volHigh.style.display='block';volMute.style.display='none'}else{player.mute();volSlider.value=0;volHigh.style.display='none';volMute.style.display='block'}});
+document.getElementById('fullscreenBtn').addEventListener('click',function(e){e.stopPropagation();if(!document.fullscreenElement)playerBox.requestFullscreen().catch(function(){});else document.exitFullscreen()});
+document.addEventListener('keydown',function(e){if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;switch(e.code){case'Space':e.preventDefault();togglePlay();break;case'ArrowLeft':e.preventDefault();skipKeyboard(-5);break;case'ArrowRight':e.preventDefault();skipKeyboard(5);break;case'ArrowUp':e.preventDefault();if(player){var v=Math.min(player.getVolume()+5,100);player.setVolume(v);volSlider.value=v}break;case'ArrowDown':e.preventDefault();if(player){var v=Math.max(player.getVolume()-5,0);player.setVolume(v);volSlider.value=v}break;case'KeyF':document.getElementById('fullscreenBtn').click();break;case'KeyM':document.getElementById('muteToggle').click();break}});
+var lastTapTime=0;gestureZone.addEventListener('touchend',function(e){var now=Date.now(),tapGap=now-lastTapTime;var x=e.changedTouches[0].clientX,w=window.innerWidth;if(tapGap<300&&tapGap>0){if(x<w*.33)skip(-10);else if(x>w*.66)skip(10)}else{showControlsAndTopBar(false)}lastTapTime=now});
+window.onYouTubeIframeAPIReady=function(){init()};
+if(!document.querySelector('script[src*="iframe_api"]')){var tag=document.createElement('script');tag.src='https://www.youtube.com/iframe_api';document.head.appendChild(tag)}
+if(typeof YT!=='undefined'&&YT.Player)init();
+window.prevLecture=prevLecture;window.nextLecture=nextLecture;
+</script>
+</body>
+</html>
